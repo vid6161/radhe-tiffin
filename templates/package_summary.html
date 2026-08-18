@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Review Package | Radhe Tiffin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{margin:0;background:#fffaf2;color:#2d241e;font-family:Arial,Helvetica,sans-serif}.wrap{max-width:800px;margin:auto;padding:60px 22px 90px}.card{background:#fff;border:1px solid #e8e2da;border-radius:22px;padding:28px}.eyebrow{color:#bd6200;font-size:10px;font-weight:900;letter-spacing:.16em}.row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid #eee8e1}.label{color:#665b53;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.value{font-weight:800;text-align:right}.days{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.day{padding:8px 11px;background:#fff0d5;border-radius:999px;font-size:11px;font-weight:900}.total{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid #e8e2da}.total strong{font-size:32px}.saving{color:#276347;font-size:12px;font-weight:800;margin-top:5px}.payment-box{margin-top:18px;padding:15px;border:1px solid #ead7bb;background:#fff8eb;border-radius:14px;color:#5d5148;font-size:12px;line-height:1.7}.actions{display:flex;gap:10px;margin-top:24px}.button{height:48px;border:0;border-radius:999px;padding:0 20px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;cursor:pointer;text-decoration:none}.primary{background:#2d241e;color:#fff;flex:1}.secondary{border:1px solid #e5e1db;background:#fff;color:#2d241e}
+@media(max-width:600px){.row{display:block}.value{text-align:left;margin-top:4px}.actions{flex-direction:column}}
+</style></head><body>
+<main class="wrap"><div class="eyebrow">RADHE TIFFIN · PACKAGE SUMMARY</div><h1>Review your weekly package</h1><div class="card">
+<div class="row"><span class="label">Package</span><span class="value">{{ frequency }} day{% if frequency != 1 %}s{% endif %} / week</span></div>
+<div class="row"><span class="label">Customer</span><span class="value">{{ first_name }} {{ last_name }}</span></div>
+<div class="row"><span class="label">Pickup</span><span class="value">{{ location }} · {{ pickup_time }}</span></div>
+<div class="row"><span class="label">Payment</span><span class="value">Selected below</span></div>
+<div class="days">{% for day in selected_days %}<span class="day">{{ day }}</span>{% endfor %}</div>
+{% for menu in menus %}<div class="row"><span class="label">{{ menu.day }} · {{ menu.date }}</span><span class="value">{{ menu.name }}</span></div>{% endfor %}
+<div class="total"><div><span style="font-weight:900;">Weekly total</span><div class="saving">You save €{{ "%.2f"|format(savings) }} vs €{{ "%.2f"|format(frequency*12) }} regular pricing.</div></div><strong>€{{ "%.2f"|format(weekly_price) }}</strong></div>
+<form method="POST" action="{{ url_for('package_place_order') }}" class="actions">
+<input type="hidden" name="first_name" value="{{ first_name }}"><input type="hidden" name="last_name" value="{{ last_name }}"><input type="hidden" name="email" value="{{ email }}"><input type="hidden" name="phone" value="{{ phone }}"><input type="hidden" name="location" value="{{ location }}"><input type="hidden" name="pickup_start" value="{{ pickup_start }}"><input type="hidden" name="pickup_end" value="{{ pickup_end }}"><input type="hidden" name="frequency" value="{{ frequency }}">
+{% for day in selected_days %}<input type="hidden" name="days" value="{{ day }}">{% endfor %}
+<select name="payment_method" style="height:48px;border:1px solid #e5e1db;border-radius:999px;padding:0 14px;background:#fff;">{% for key,method in payment_methods.items() %}<option value="{{ key }}">{{ method.label }}</option>{% endfor %}</select>
+<a href="{{ url_for('packages') }}" class="button secondary">EDIT</a><button class="button primary" type="submit">PLACE PACKAGE ORDER →</button>
+</form>
+</div></main></body></html>

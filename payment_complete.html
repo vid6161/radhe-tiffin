@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Payment Complete | Radhe Tiffin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{margin:0;background:#fffaf2;color:#2d241e;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:720px;margin:auto;padding:80px 22px;text-align:center}
+.card{background:#fff;border:1px solid #e8e2da;border-radius:24px;padding:34px;box-shadow:0 12px 30px rgba(45,36,30,.05)}
+.icon{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;background:#e5f4eb;color:#276347;display:grid;place-items:center;font-size:30px;font-weight:900}
+h1{margin:8px 0;font-size:42px}.muted{color:#665b53}
+.rows{text-align:left;margin-top:25px}.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee8e1}.label{color:#665b53;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.value{font-weight:800;text-align:right}
+.button{display:flex;height:48px;margin-top:24px;border-radius:999px;background:#2d241e;color:#fff;text-decoration:none;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+</style></head><body>
+<main class="wrap"><div class="card">
+<div class="icon">✓</div><div class="muted">RADHE TIFFIN · PAYMENT CONFIRMED</div>
+<h1>Payment successful</h1>
+<p class="muted">Your payment has been verified and your order is confirmed.</p>
+<div class="rows">
+<div class="row"><span class="label">Order</span><span class="value">{{ order.order_number }}</span></div>
+<div class="row"><span class="label">Tiffin</span><span class="value">{{ order.meal_name }}</span></div>
+<div class="row"><span class="label">Pickup</span><span class="value">{{ order.pickup_date }} · {{ order.pickup_location }}</span></div>
+<div class="row"><span class="label">Total paid</span><span class="value">€{{ "%.2f"|format(order.total_amount) }}</span></div>
+</div>
+<a href="/" class="button">BACK TO WEBSITE →</a>
+</div></main></body></html>

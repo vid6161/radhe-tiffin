@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Radhe Tiffin — Admin Login</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body.admin-login-body {
+            min-height: 100vh;
+            margin: 0;
+            background: #f8f0e3;
+            color: #2d241e;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
+        .admin-login-header {
+            height: 72px;
+            background: #fffaf2;
+            border-bottom: 1px solid #e7dfd4;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-login-header-inner {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-login-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            text-decoration: none;
+            color: #2d241e;
+        }
+
+        .admin-login-logo-circle {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            display: grid;
+            place-items: center;
+
+            background: #ef8a08;
+            color: white;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .admin-login-logo-text {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+        }
+
+        .admin-login-logo-text strong {
+            color: #c76800;
+        }
+
+        .admin-login-label {
+            color: #bd6200;
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 0.16em;
+        }
+
+        /* ==================================================
+           MAIN
+           ================================================== */
+
+        .admin-login-main {
+            flex: 1;
+
+            display: grid;
+            place-items: center;
+
+            padding: 60px 20px;
+        }
+
+        /* ==================================================
+           LOGIN CARD
+           ================================================== */
+
+        .admin-login-card {
+            width: min(440px, 100%);
+
+            background: white;
+
+            border: 1px solid #e7e0d8;
+            border-radius: 24px;
+
+            padding: 42px;
+
+            box-shadow:
+                0 18px 45px
+                rgba(65, 45, 25, 0.08);
+        }
+
+        .admin-login-eyebrow {
+            margin-bottom: 10px;
+
+            color: #bd6200;
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 0.16em;
+        }
+
+        .admin-login-card h1 {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: clamp(38px, 7vw, 52px);
+            line-height: 1;
+
+            color: #2d241e;
+        }
+
+        .admin-login-subtitle {
+            margin: 14px 0 30px;
+
+            color: #6c6057;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ==================================================
+           ERROR
+           ================================================== */
+
+        .admin-login-error {
+            margin-bottom: 18px;
+
+            padding: 12px 14px;
+
+            border: 1px solid #f0c8c2;
+            border-radius: 12px;
+
+            background: #fbe8e5;
+            color: #a73c32;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ==================================================
+           FORM
+           ================================================== */
+
+        .admin-login-field {
+            margin-bottom: 18px;
+        }
+
+        .admin-login-field label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #3d322a;
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 0.1em;
+
+            text-transform: uppercase;
+        }
+
+        .admin-login-field input {
+            width: 100%;
+            height: 48px;
+
+            padding: 0 14px;
+
+            border: 1px solid #ddd5cc;
+            border-radius: 12px;
+
+            background: #fff;
+            color: #2d241e;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s ease;
+        }
+
+        .admin-login-field input:focus {
+            border-color: #e98308;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(233, 131, 8, 0.10);
+        }
+
+        /* ==================================================
+           LOGIN BUTTON
+           ================================================== */
+
+        .admin-login-button {
+            width: 100%;
+            height: 50px;
+
+            margin-top: 6px;
+
+            border: none;
+            border-radius: 999px;
+
+            background: #2d241e;
+            color: white;
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 0.1em;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .admin-login-button:hover {
+            background: #bd6200;
+
+            transform: translateY(-1px);
+        }
+
+        .admin-login-button:active {
+            transform: translateY(0);
+        }
+
+        /* ==================================================
+           BACK LINK
+           ================================================== */
+
+        .admin-login-back {
+            display: block;
+
+            margin-top: 22px;
+
+            text-align: center;
+
+            color: #6c6057;
+
+            font-size: 13px;
+
+            text-decoration: none;
+
+            transition: 0.2s ease;
+        }
+
+        .admin-login-back:hover {
+            color: #bd6200;
+        }
+
+        /* ==================================================
+           MOBILE
+           ================================================== */
+
+        @media (max-width: 600px) {
+
+            .admin-login-header-inner {
+                width: calc(100% - 28px);
+            }
+
+            .admin-login-label {
+                display: none;
+            }
+
+            .admin-login-main {
+                padding: 30px 14px;
+            }
+
+            .admin-login-card {
+                padding: 30px 22px;
+                border-radius: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="admin-login-body">
+
+
+<!-- ==================================================
+     HEADER
+     ================================================== -->
+
+<header class="admin-login-header">
+
+    <div class="admin-login-header-inner">
+
+        <a
+            href="/"
+            class="admin-login-logo"
+        >
+
+            <span class="admin-login-logo-circle">
+                R
+            </span>
+
+            <span class="admin-login-logo-text">
+                RADHE
+                <strong>TIFFIN</strong>
+            </span>
+
+        </a>
+
+
+        <span class="admin-login-label">
+            ADMIN
+        </span>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     LOGIN
+     ================================================== -->
+
+<main class="admin-login-main">
+
+    <section class="admin-login-card">
+
+        <div class="admin-login-eyebrow">
+            RADHE TIFFIN
+        </div>
+
+
+        <h1>
+            Admin Login
+        </h1>
+
+
+        <p class="admin-login-subtitle">
+            Sign in to manage customer orders,
+            payments and pickup status.
+        </p>
+
+
+        {% if error %}
+
+            <div class="admin-login-error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <form
+            method="POST"
+            action="{{ url_for('admin_login') }}"
+        >
+
+            <input
+                type="hidden"
+                name="next"
+                value="{{ next_url }}"
+            >
+
+
+            <!-- USERNAME -->
+
+            <div class="admin-login-field">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="admin-login-field">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="admin-login-button"
+            >
+                SIGN IN TO ADMIN
+            </button>
+
+        </form>
+
+
+        <a
+            href="/"
+            class="admin-login-back"
+        >
+            ← Back to website
+        </a>
+
+    </section>
+
+</main>
+
+
+</body>
+
+</html>

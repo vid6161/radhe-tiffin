@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Radhe Tiffin — Menu Management
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* ==================================================
+           RESET
+           ================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            background: #f8f0e3;
+            color: #2d241e;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
+        .menu-admin-header {
+            height: 72px;
+
+            background: #fffaf2;
+
+            border-bottom: 1px solid #e7dfd4;
+
+            display: flex;
+            align-items: center;
+        }
+
+
+        .menu-admin-header-inner {
+            width: min(
+                1120px,
+                calc(100% - 40px)
+            );
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .menu-logo {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 10px;
+
+            text-decoration: none;
+
+            color: #2d241e;
+        }
+
+
+        .menu-logo-circle {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            display: grid;
+            place-items: center;
+
+            background: #ef8a08;
+
+            color: white;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+
+        .menu-logo-text {
+            font-size: 15px;
+            font-weight: 900;
+
+            letter-spacing: 0.14em;
+        }
+
+
+        .menu-logo-text strong {
+            color: #c76800;
+        }
+
+
+        .menu-admin-title {
+            color: #bd6200;
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 0.16em;
+        }
+
+
+        .menu-header-actions {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .menu-header-link {
+            color: #2d241e;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        .menu-header-link:hover {
+            color: #bd6200;
+        }
+
+
+        .menu-logout-form {
+            margin: 0;
+        }
+
+
+        .menu-logout-button {
+            border: 1px solid #e5dfd7;
+
+            background: white;
+
+            color: #5d5148;
+
+            padding: 8px 14px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.06em;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+
+        .menu-logout-button:hover {
+            border-color: #e98308;
+
+            color: #bd6200;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* ==================================================
+           MAIN
+           ================================================== */
+
+        .menu-page {
+            width: min(
+                1120px,
+                calc(100% - 40px)
+            );
+
+            margin: 0 auto;
+
+            padding: 58px 0 80px;
+        }
+
+
+        /* ==================================================
+           PAGE HEADING
+           ================================================== */
+
+        .menu-page-heading {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 30px;
+
+            margin-bottom: 38px;
+        }
+
+
+        .menu-eyebrow {
+            margin-bottom: 10px;
+
+            color: #bd6200;
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 0.16em;
+        }
+
+
+        .menu-page-heading h1 {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: clamp(
+                44px,
+                7vw,
+                68px
+            );
+
+            line-height: 0.95;
+
+            color: #2d241e;
+        }
+
+
+        .menu-page-heading p {
+            margin: 12px 0 0;
+
+            color: #6c6057;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+        }
+
+
+        .menu-add-button {
+            flex-shrink: 0;
+
+            border: none;
+
+            background: #2d241e;
+
+            color: white;
+
+            padding: 13px 20px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 0.08em;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            transition: 0.2s ease;
+        }
+
+
+        .menu-add-button:hover {
+            background: #bd6200;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* ==================================================
+           EDITOR CARD
+           ================================================== */
+
+        .menu-editor {
+            display: none;
+
+            margin-bottom: 34px;
+
+            background: white;
+
+            border: 1px solid #e5dfd7;
+
+            border-radius: 24px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 16px 40px
+                rgba(65, 45, 25, 0.06);
+        }
+
+
+        .menu-editor.active {
+            display: block;
+        }
+
+
+        .menu-editor-heading {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 26px;
+        }
+
+
+        .menu-editor-heading h2 {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 30px;
+        }
+
+
+        .menu-close-button {
+            border: 1px solid #e5dfd7;
+
+            background: white;
+
+            color: #5d5148;
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+        .menu-close-button:hover {
+            border-color: #e98308;
+
+            color: #bd6200;
+        }
+
+
+        /* ==================================================
+           FORM GRID
+           ================================================== */
+
+        .menu-form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .menu-field {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+
+        .menu-field.full {
+            grid-column: 1 / -1;
+        }
+
+
+        .menu-field label {
+            color: #3d322a;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.10em;
+
+            text-transform: uppercase;
+        }
+
+
+        .menu-field input,
+        .menu-field select {
+            width: 100%;
+
+            height: 46px;
+
+            padding: 0 13px;
+
+            border: 1px solid #ddd5cc;
+
+            border-radius: 11px;
+
+            background: white;
+
+            color: #2d241e;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: 0.2s ease;
+        }
+
+
+        .menu-field input:focus,
+        .menu-field select:focus {
+            border-color: #e98308;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    233,
+                    131,
+                    8,
+                    0.10
+                );
+        }
+
+
+        /* ==================================================
+           ITEMS
+           ================================================== */
+
+        .menu-items-section {
+            margin-top: 28px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #eee8e1;
+        }
+
+
+        .menu-items-heading {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .menu-items-heading h3 {
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 900;
+        }
+
+
+        .add-item-button {
+            border: 1px solid #e98308;
+
+            background: white;
+
+            color: #bd6200;
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.05em;
+
+            cursor: pointer;
+        }
+
+
+        .add-item-button:hover {
+            background: #fff1df;
+        }
+
+
+        .menu-item-row {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr)
+                auto;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .menu-item-row input {
+            width: 100%;
+
+            height: 44px;
+
+            padding: 0 12px;
+
+            border: 1px solid #ddd5cc;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: white;
+
+            color: #2d241e;
+        }
+
+
+        .menu-item-row input:focus {
+            border-color: #e98308;
+        }
+
+
+        .remove-item-button {
+            width: 44px;
+            height: 44px;
+
+            border: 1px solid #efd4cf;
+
+            background: #fff6f4;
+
+            color: #a73c32;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 17px;
+        }
+
+
+        .remove-item-button:hover {
+            background: #fbe8e5;
+        }
+
+
+        /* ==================================================
+           FORM ACTIONS
+           ================================================== */
+
+        .menu-form-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 28px;
+
+            padding-top: 22px;
+
+            border-top: 1px solid #eee8e1;
+        }
+
+
+        .menu-secondary-button,
+        .menu-save-button {
+            border-radius: 999px;
+
+            padding: 12px 20px;
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.06em;
+
+            cursor: pointer;
+        }
+
+
+        .menu-secondary-button {
+            border: 1px solid #e5dfd7;
+
+            background: white;
+
+            color: #5d5148;
+        }
+
+
+        .menu-save-button {
+            border: none;
+
+            background: #ef8a08;
+
+            color: white;
+        }
+
+
+        .menu-save-button:hover {
+            background: #bd6200;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* ==================================================
+           CURRENT MENU
+           ================================================== */
+
+        .current-menu-heading {
+            display: flex;
+
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .current-menu-heading h2 {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 34px;
+        }
+
+
+        .menu-count {
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 9px 14px;
+
+            border: 1px solid #e5dfd7;
+
+            border-radius: 999px;
+
+            background: white;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           MENU LIST
+           ================================================== */
+
+        .menu-list {
+            display: grid;
+
+            gap: 18px;
+        }
+
+
+        .menu-card {
+            background: white;
+
+            border: 1px solid #e5dfd7;
+
+            border-radius: 22px;
+
+            padding: 26px 28px;
+
+            box-shadow:
+                0 10px 28px
+                rgba(65, 45, 25, 0.04);
+        }
+
+
+        .menu-card-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 25px;
+
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid #eee8e1;
+        }
+
+
+        .menu-date-label {
+            margin-bottom: 7px;
+
+            color: #bd6200;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.12em;
+        }
+
+
+        .menu-card h3 {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 28px;
+        }
+
+
+        .menu-day {
+            margin-top: 7px;
+
+            color: #766a61;
+
+            font-size: 13px;
+        }
+
+
+        .menu-price {
+            color: #bd6200;
+
+            font-size: 26px;
+            font-weight: 900;
+
+            white-space: nowrap;
+        }
+
+
+        /* ==================================================
+           MENU ITEMS DISPLAY
+           ================================================== */
+
+        .menu-card-body {
+            padding-top: 20px;
+        }
+
+
+        .menu-items-label {
+            margin-bottom: 12px;
+
+            color: #3d322a;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.10em;
+        }
+
+
+        .menu-item-list {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 10px 30px;
+
+            margin: 0;
+
+            padding: 0;
+
+            list-style: none;
+        }
+
+
+        .menu-item-display {
+            padding: 11px 0;
+
+            border-bottom: 1px solid #f0ebe5;
+
+            font-size: 14px;
+        }
+
+
+        .menu-item-display strong {
+            display: block;
+
+            color: #2d241e;
+        }
+
+
+        .menu-item-display span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #766a61;
+
+            font-size: 12px;
+        }
+
+
+        /* ==================================================
+           CARD ACTIONS
+           ================================================== */
+
+        .menu-card-actions {
+            display: flex;
+
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 9px;
+
+            margin-top: 22px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #eee8e1;
+        }
+
+
+        .menu-edit-button,
+        .menu-delete-button {
+            padding: 10px 17px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.06em;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+
+        .menu-edit-button {
+            border: 1px solid #e5dfd7;
+
+            background: white;
+
+            color: #3d322a;
+        }
+
+
+        .menu-edit-button:hover {
+            border-color: #e98308;
+
+            color: #bd6200;
+        }
+
+
+        .menu-delete-button {
+            border: none;
+
+            background: #fbe8e5;
+
+            color: #a73c32;
+        }
+
+
+        .menu-delete-button:hover {
+            background: #f4d5d1;
+        }
+
+
+        .menu-delete-form {
+            margin: 0;
+        }
+
+
+        /* ==================================================
+           EMPTY STATE
+           ================================================== */
+
+        .menu-empty {
+            background: white;
+
+            border: 1px solid #e5dfd7;
+
+            border-radius: 22px;
+
+            padding: 65px 25px;
+
+            text-align: center;
+        }
+
+
+        .menu-empty-icon {
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 18px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            background: #fff0dc;
+
+            color: #bd6200;
+
+            font-size: 25px;
+        }
+
+
+        .menu-empty h3 {
+            margin: 0 0 8px;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 26px;
+        }
+
+
+        .menu-empty p {
+            margin: 0;
+
+            color: #766a61;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           MOBILE
+           ================================================== */
+
+        @media (max-width: 800px) {
+
+            .menu-page {
+                width: calc(100% - 28px);
+
+                padding-top: 38px;
+            }
+
+
+            .menu-page-heading {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .menu-add-button {
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            .menu-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .menu-field.full {
+                grid-column: auto;
+            }
+
+
+            .menu-item-row {
+                grid-template-columns: 1fr;
+            }
+
+
+            .remove-item-button {
+                width: 100%;
+            }
+
+
+            .menu-item-list {
+                grid-template-columns: 1fr;
+            }
+
+
+            .menu-card-top {
+                flex-direction: column;
+            }
+
+
+            .menu-price {
+                font-size: 23px;
+            }
+
+
+            .menu-card-actions {
+                justify-content: stretch;
+
+                flex-direction: column;
+            }
+
+
+            .menu-edit-button,
+            .menu-delete-button,
+            .menu-delete-form {
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            .menu-delete-form button {
+                width: 100%;
+            }
+
+
+            .menu-header-link {
+                display: none;
+            }
+
+
+            .menu-admin-title {
+                display: none;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .menu-admin-header {
+                height: 64px;
+            }
+
+
+            .menu-admin-header-inner {
+                width: calc(100% - 28px);
+            }
+
+
+            .menu-page-heading h1 {
+                font-size: 46px;
+            }
+
+
+            .menu-editor {
+                padding: 22px 18px;
+
+                border-radius: 19px;
+            }
+
+
+            .menu-card {
+                padding: 22px 18px;
+
+                border-radius: 18px;
+            }
+
+
+            .menu-form-actions {
+                flex-direction: column;
+            }
+
+
+            .menu-secondary-button,
+            .menu-save-button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+     ================================================== -->
+
+<header class="menu-admin-header">
+
+    <div class="menu-admin-header-inner">
+
+
+        <a
+            href="{{ url_for('admin_menu') }}"
+            class="menu-logo"
+        >
+
+            <span class="menu-logo-circle">
+                R
+            </span>
+
+            <span class="menu-logo-text">
+                RADHE
+                <strong>TIFFIN</strong>
+            </span>
+
+        </a>
+
+
+        <div class="menu-admin-title">
+            MENU MANAGEMENT
+        </div>
+
+
+        <div class="menu-header-actions">
+
+            <a
+                href="{{ url_for('admin_menu') }}"
+                class="menu-header-link"
+            >
+                Dashboard →
+            </a>
+
+
+            <a
+                href="/"
+                class="menu-header-link"
+            >
+                Website →
+            </a>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('admin_logout') }}"
+                class="menu-logout-form"
+            >
+
+                <button
+                    type="submit"
+                    class="menu-logout-button"
+                >
+                    LOGOUT
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     MAIN
+     ================================================== -->
+
+<main class="menu-page">
+
+
+    <!-- ==================================================
+         PAGE HEADING
+         ================================================== -->
+
+    <div class="menu-page-heading">
+
+        <div>
+
+            <div class="menu-eyebrow">
+                RADHE TIFFIN
+            </div>
+
+            <h1>
+                Menu Management
+            </h1>
+
+            <p>
+                Manage your tiffin menu, ingredients,
+                prices and menu dates.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="menu-add-button"
+            id="open-add-menu"
+        >
+            + ADD NEW MENU
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         ADD / EDIT MENU
+         ================================================== -->
+
+    <section
+        class="menu-editor"
+        id="menu-editor"
+    >
+
+        <div class="menu-editor-heading">
+
+            <h2 id="editor-title">
+                Add New Menu
+            </h2>
+
+
+            <button
+                type="button"
+                class="menu-close-button"
+                id="close-editor"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('admin_menu_save') }}"
+            id="menu-form"
+        >
+
+
+            <input
+                type="hidden"
+                name="menu_id"
+                id="menu_id"
+                value=""
+            >
+
+
+            <div class="menu-form-grid">
+
+
+                <!-- DATE -->
+
+                <div class="menu-field">
+
+                    <label for="menu_date">
+                        Menu date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="menu_date"
+                        name="menu_date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PRICE -->
+
+                <div class="menu-field">
+
+                    <label for="price">
+                        Price (€)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        min="0"
+                        step="0.01"
+                        placeholder="12.00"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ENGLISH DAY -->
+
+                <div class="menu-field">
+
+                    <label for="day_name">
+                        English day
+                    </label>
+
+                    <select
+                        id="day_name"
+                        name="day_name"
+                        required
+                    >
+
+                        <option value="">
+                            Select day
+                        </option>
+
+                        <option value="Monday">
+                            Monday
+                        </option>
+
+                        <option value="Tuesday">
+                            Tuesday
+                        </option>
+
+                        <option value="Wednesday">
+                            Wednesday
+                        </option>
+
+                        <option value="Thursday">
+                            Thursday
+                        </option>
+
+                        <option value="Friday">
+                            Friday
+                        </option>
+
+                        <option value="Saturday">
+                            Saturday
+                        </option>
+
+                        <option value="Sunday">
+                            Sunday
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- GERMAN DAY -->
+
+                <div class="menu-field">
+
+                    <label for="day_name_german">
+                        German day
+                    </label>
+
+                    <select
+                        id="day_name_german"
+                        name="day_name_german"
+                        required
+                    >
+
+                        <option value="">
+                            Select day
+                        </option>
+
+                        <option value="Montag">
+                            Montag
+                        </option>
+
+                        <option value="Dienstag">
+                            Dienstag
+                        </option>
+
+                        <option value="Mittwoch">
+                            Mittwoch
+                        </option>
+
+                        <option value="Donnerstag">
+                            Donnerstag
+                        </option>
+
+                        <option value="Freitag">
+                            Freitag
+                        </option>
+
+                        <option value="Samstag">
+                            Samstag
+                        </option>
+
+                        <option value="Sonntag">
+                            Sonntag
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- MEAL NAME -->
+
+                <div class="menu-field full">
+
+                    <label for="meal_name">
+                        Tiffin / meal name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="meal_name"
+                        name="meal_name"
+                        placeholder="Aloo Matar Tiffin"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 ITEMS
+                 ================================================== -->
+
+            <div class="menu-items-section">
+
+
+                <div class="menu-items-heading">
+
+                    <h3>
+                        Menu items
+                    </h3>
+
+
+                    <button
+                        type="button"
+                        class="add-item-button"
+                        id="add-item-button"
+                    >
+                        + ADD ITEM
+                    </button>
+
+                </div>
+
+
+                <div id="menu-items-container">
+
+
+                    <div class="menu-item-row">
+
+                        <input
+                            type="text"
+                            name="item_name[]"
+                            placeholder="Item name"
+                            required
+                        >
+
+
+                        <input
+                            type="text"
+                            name="item_name_german[]"
+                            placeholder="German name (optional)"
+                        >
+
+
+                        <button
+                            type="button"
+                            class="remove-item-button"
+                            onclick="removeMenuItem(this)"
+                            aria-label="Remove item"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 FORM ACTIONS
+                 ================================================== -->
+
+            <div class="menu-form-actions">
+
+                <button
+                    type="button"
+                    class="menu-secondary-button"
+                    id="cancel-editor"
+                >
+                    CANCEL
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="menu-save-button"
+                >
+                    SAVE MENU
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
+    <!-- ==================================================
+         CURRENT MENU
+         ================================================== -->
+
+    <section>
+
+
+        <div class="current-menu-heading">
+
+            <div>
+
+                <div class="menu-eyebrow">
+                    CURRENT MENUS
+                </div>
+
+                <h2>
+                    Your Menu
+                </h2>
+
+            </div>
+
+
+            <span class="menu-count">
+
+                {{ menus|length }}
+
+                {% if menus|length == 1 %}
+                    menu
+                {% else %}
+                    menus
+                {% endif %}
+
+            </span>
+
+        </div>
+
+
+        {% if menus %}
+
+
+            <div class="menu-list">
+
+
+                {% for menu in menus %}
+
+
+                    <article
+                        class="menu-card"
+                        data-menu-id="{{ menu['id'] }}"
+                    >
+
+
+                        <!-- ==================================================
+                             MENU TOP
+                             ================================================== -->
+
+                        <div class="menu-card-top">
+
+
+                            <div>
+
+                                <div class="menu-date-label">
+
+                                    {{ menu["date"] }}
+
+                                </div>
+
+
+                                <h3>
+                                    {{ menu["name"] }}
+                                </h3>
+
+
+                                <div class="menu-day">
+
+                                    {{ menu["day"] }}
+
+                                    {% if menu["german_day"] %}
+                                        · {{ menu["german_day"] }}
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="menu-price">
+
+                                €{{ "%.2f"|format(
+                                    menu["price"]
+                                ) }}
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ITEMS
+                             ================================================== -->
+
+                        <div class="menu-card-body">
+
+
+                            <div class="menu-items-label">
+                                TIFFIN INCLUDES
+                            </div>
+
+
+                            {% if menu["items"] %}
+
+
+                                <ul class="menu-item-list">
+
+
+                                    {% for item in menu["items"] %}
+
+
+                                        <li
+                                            class="menu-item-display"
+                                        >
+
+                                            <strong>
+                                                {{ item["name"] }}
+                                            </strong>
+
+
+                                            {% if item["german_name"] %}
+
+                                                <span>
+                                                    {{ item["german_name"] }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </li>
+
+
+                                    {% endfor %}
+
+
+                                </ul>
+
+
+                            {% else %}
+
+
+                                <div
+                                    style="
+                                        color:#766a61;
+                                        font-size:13px;
+                                        padding:10px 0;
+                                    "
+                                >
+                                    No menu items added.
+                                </div>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACTIONS
+                             ================================================== -->
+
+                        <div class="menu-card-actions">
+
+
+                            <button
+                                type="button"
+                                class="menu-edit-button"
+                                onclick="editMenu('{{ menu|tojson|safe }}')"
+                            >
+                                EDIT MENU
+                            </button>
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'admin_menu_delete',
+                                    menu_id=menu['id']
+                                ) }}"
+                                class="menu-delete-form"
+                                onsubmit="
+                                    return confirm(
+                                        'Remove this menu?'
+                                    );
+                                "
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="menu-delete-button"
+                                >
+                                    REMOVE MENU
+                                </button>
+
+                            </form>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="menu-empty">
+
+
+                <div class="menu-empty-icon">
+                    +
+                </div>
+
+
+                <h3>
+                    No menus yet
+                </h3>
+
+
+                <p>
+                    Create your first tiffin menu
+                    using the button above.
+                </p>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+<!-- ==================================================
+     JAVASCRIPT
+     ================================================== -->
+
+<script>
+
+    const editor =
+        document.getElementById(
+            "menu-editor"
+        );
+
+    const form =
+        document.getElementById(
+            "menu-form"
+        );
+
+    const editorTitle =
+        document.getElementById(
+            "editor-title"
+        );
+
+    const menuId =
+        document.getElementById(
+            "menu_id"
+        );
+
+    const menuDate =
+        document.getElementById(
+            "menu_date"
+        );
+
+    const mealName =
+        document.getElementById(
+            "meal_name"
+        );
+
+    const dayName =
+        document.getElementById(
+            "day_name"
+        );
+
+    const germanDayName =
+        document.getElementById(
+            "day_name_german"
+        );
+
+    const price =
+        document.getElementById(
+            "price"
+        );
+
+    const itemsContainer =
+        document.getElementById(
+            "menu-items-container"
+        );
+
+
+    /* ==================================================
+       OPEN ADD MENU
+       ================================================== */
+
+    document
+        .getElementById(
+            "open-add-menu"
+        )
+        .addEventListener(
+            "click",
+            function () {
+
+                openNewMenu();
+
+            }
+        );
+
+
+    /* ==================================================
+       CLOSE EDITOR
+       ================================================== */
+
+    document
+        .getElementById(
+            "close-editor"
+        )
+        .addEventListener(
+            "click",
+            closeEditor
+        );
+
+
+    document
+        .getElementById(
+            "cancel-editor"
+        )
+        .addEventListener(
+            "click",
+            closeEditor
+        );
+
+
+    /* ==================================================
+       OPEN NEW MENU
+       ================================================== */
+
+    function openNewMenu() {
+
+        form.reset();
+
+        menuId.value = "";
+
+        editorTitle.textContent =
+            "Add New Menu";
+
+
+        itemsContainer.innerHTML = "";
+
+        addMenuItem();
+
+
+        editor.classList.add(
+            "active"
+        );
+
+
+        editor.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+
+    /* ==================================================
+       CLOSE EDITOR
+       ================================================== */
+
+    function closeEditor() {
+
+        editor.classList.remove(
+            "active"
+        );
+
+    }
+
+
+    /* ==================================================
+       EDIT EXISTING MENU
+       ================================================== */
+
+    function editMenu(menu) {
+
+        editorTitle.textContent =
+            "Edit Menu";
+
+
+        menuId.value =
+            menu.id || "";
+
+
+        menuDate.value =
+            menu.date || "";
+
+
+        mealName.value =
+            menu.name || "";
+
+
+        dayName.value =
+            menu.day || "";
+
+
+        germanDayName.value =
+            menu.german_day || "";
+
+
+        price.value =
+            menu.price || "";
+
+
+        itemsContainer.innerHTML = "";
+
+
+        if (
+            menu.items &&
+            menu.items.length > 0
+        ) {
+
+            menu.items.forEach(
+                function (item) {
+
+                    addMenuItem(
+                        item.name || "",
+                        item.german_name || ""
+                    );
+
+                }
+            );
+
+        } else {
+
+            addMenuItem();
+
+        }
+
+
+        editor.classList.add(
+            "active"
+        );
+
+
+        editor.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+
+    /* ==================================================
+       ADD ITEM
+       ================================================== */
+
+    document
+        .getElementById(
+            "add-item-button"
+        )
+        .addEventListener(
+            "click",
+            function () {
+
+                addMenuItem();
+
+            }
+        );
+
+
+    function addMenuItem(
+        englishName = "",
+        germanName = ""
+    ) {
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "menu-item-row";
+
+
+        row.innerHTML = `
+
+            <input
+                type="text"
+                name="item_name[]"
+                placeholder="Item name"
+                value="${escapeHtml(
+                    englishName
+                )}"
+                required
+            >
+
+            <input
+                type="text"
+                name="item_name_german[]"
+                placeholder="German name (optional)"
+                value="${escapeHtml(
+                    germanName
+                )}"
+            >
+
+            <button
+                type="button"
+                class="remove-item-button"
+                onclick="removeMenuItem(this)"
+                aria-label="Remove item"
+            >
+                ×
+            </button>
+
+        `;
+
+
+        itemsContainer.appendChild(
+            row
+        );
+
+    }
+
+
+    /* ==================================================
+       REMOVE ITEM
+       ================================================== */
+
+    function removeMenuItem(button) {
+
+        const rows =
+            itemsContainer.querySelectorAll(
+                ".menu-item-row"
+            );
+
+
+        if (rows.length <= 1) {
+
+            alert(
+                "At least one menu item is required."
+            );
+
+            return;
+
+        }
+
+
+        button
+            .closest(
+                ".menu-item-row"
+            )
+            .remove();
+
+    }
+
+
+    /* ==================================================
+       SAFE HTML ESCAPE
+       ================================================== */
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* ==================================================
+       AUTO DAY SELECTION
+       ================================================== */
+
+    menuDate.addEventListener(
+        "change",
+        function () {
+
+            if (!menuDate.value) {
+                return;
+            }
+
+
+            const date =
+                new Date(
+                    menuDate.value +
+                    "T12:00:00"
+                );
+
+
+            const englishDays = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ];
+
+
+            const germanDays = [
+                "Sonntag",
+                "Montag",
+                "Dienstag",
+                "Mittwoch",
+                "Donnerstag",
+                "Freitag",
+                "Samstag"
+            ];
+
+
+            dayName.value =
+                englishDays[
+                    date.getDay()
+                ];
+
+
+            germanDayName.value =
+                germanDays[
+                    date.getDay()
+                ];
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

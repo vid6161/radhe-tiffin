@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order {{ item.name }} | Radhe Tiffin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --orange: #e98308;
+            --orange-dark: #bd6200;
+            --ink: #2d241e;
+            --muted: #665b53;
+            --line: #e8e2da;
+            --cream: #fffaf2;
+            --soft-orange: #fff0d5;
+            --soft-green: #e5f4eb;
+            --green: #276347;
+            --soft-red: #fbe8e5;
+            --red: #a43d34;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #fffaf2;
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .order-header {
+            height: 74px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255,250,242,.96);
+        }
+        .order-header-inner {
+            max-width: 1180px;
+            height: 100%;
+            margin: auto;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--orange);
+            color: white;
+            font-size: 20px;
+        }
+        .logo-text strong { color: var(--orange-dark); }
+        .header-link {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .order-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 58px 22px 80px;
+        }
+        .eyebrow {
+            color: var(--orange-dark);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+        h1 {
+            margin: 8px 0 8px;
+            font-size: clamp(34px, 5vw, 54px);
+            line-height: 1;
+        }
+        .subtitle {
+            color: var(--muted);
+            margin: 0 0 34px;
+            font-size: 15px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 22px;
+            align-items: start;
+        }
+        .card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 12px 30px rgba(45,36,30,.04);
+        }
+        .card h2 {
+            margin: 0 0 7px;
+            font-size: 22px;
+        }
+        .card-intro {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0 0 22px;
+        }
+
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            color: #5d5148;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #e5e1db;
+            border-radius: 12px;
+            background: white;
+            padding: 0 13px;
+            color: var(--ink);
+            font-size: 14px;
+            outline: none;
+        }
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(233,131,8,.10);
+        }
+        .quantity-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .payment-section {
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+        }
+        .payment-section h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+        .payment-intro {
+            margin: 0 0 14px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        .payment-options {
+            display: grid;
+            gap: 10px;
+        }
+        .payment-option {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            cursor: pointer;
+            background: #fff;
+        }
+        .payment-option:has(input:checked) {
+            border-color: var(--orange);
+            background: #fffaf3;
+            box-shadow: 0 0 0 3px rgba(233,131,8,.08);
+        }
+        .payment-option input { margin-top: 3px; accent-color: var(--orange); }
+        .payment-option strong { display: block; font-size: 13px; }
+        .payment-option small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+        .slot-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .slot-toolbar .field { flex: 1; margin: 0; }
+        .slot-count {
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .slots {
+            display: grid;
+            gap: 16px;
+        }
+        .slot-group {
+            display: grid;
+            gap: 10px;
+        }
+        .slot-group[hidden] {
+            display: none;
+        }
+        .slot-group-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 5px 2px 2px;
+            color: var(--orange-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+        .slot-group-count {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: .06em;
+        }
+        .slot-option {
+            position: relative;
+        }
+        .slot-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .slot-label {
+            display: block;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: .18s ease;
+            background: white;
+        }
+        .slot-label:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(45,36,30,.06);
+        }
+        .slot-option input:checked + .slot-label {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(233,131,8,.12);
+            background: #fffaf3;
+        }
+        .slot-option.disabled .slot-label {
+            opacity: .5;
+            cursor: not-allowed;
+            background: #f8f6f3;
+        }
+        .slot-main {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: center;
+        }
+        .slot-status {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .selected-badge {
+            display: none;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--soft-orange);
+            color: var(--orange-dark);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+        .slot-option input:checked + .slot-label .selected-badge {
+            display: inline-flex;
+        }
+        .slot-option input:checked + .slot-label .capacity {
+            background: var(--soft-orange);
+            color: var(--orange-dark);
+        }
+        .slot-time {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -.02em;
+        }
+        .slot-location {
+            margin-top: 5px;
+            color: var(--orange-dark);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .capacity {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--soft-green);
+            color: var(--green);
+            font-size: 10px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+        .capacity.full {
+            background: var(--soft-red);
+            color: var(--red);
+        }
+        .no-slots {
+            padding: 34px 18px;
+            text-align: center;
+            border: 1px dashed #ded6cd;
+            border-radius: 16px;
+            color: var(--muted);
+        }
+
+        .submit-button {
+            width: 100%;
+            height: 50px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--ink);
+            color: white;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .08em;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .submit-button:hover { background: var(--orange-dark); }
+        .submit-button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+        .selection-note {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 800px) {
+            .layout { grid-template-columns: 1fr; }
+            .order-container { padding-top: 38px; }
+            .quantity-row { grid-template-columns: 1fr; }
+            .slot-toolbar { align-items: stretch; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<header class="order-header">
+    <div class="order-header-inner">
+        <a href="/" class="logo">
+            <span class="logo-circle">R</span>
+            <span class="logo-text">RADHE <strong>TIFFIN</strong></span>
+        </a>
+        <a href="/" class="header-link">← Back to website</a>
+    </div>
+</header>
+
+<main class="order-container">
+    <div class="eyebrow">RADHE TIFFIN · ORDER</div>
+    <h1>{{ item.name }}</h1>
+    <p class="subtitle">
+        {{ item.day }} · {{ item.date }} · €{{ "%.2f"|format(item.price) }} per tiffin
+    </p>
+
+    <form method="POST" action="{{ url_for('order_summary', day=day_key) }}" id="orderForm">
+        <div class="layout">
+            <section class="card">
+                <h2>Your details</h2>
+                <p class="card-intro">Enter your contact details for the order.</p>
+
+                <div class="field">
+                    <label for="first_name">First name</label>
+                    <input id="first_name" name="first_name" type="text" required autocomplete="given-name">
+                </div>
+
+                <div class="field">
+                    <label for="last_name">Last name</label>
+                    <input id="last_name" name="last_name" type="text" required autocomplete="family-name">
+                </div>
+
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required autocomplete="email">
+                </div>
+
+                <div class="field">
+                    <label for="phone">Phone number</label>
+                    <input id="phone" name="phone" type="tel" required autocomplete="tel">
+                </div>
+
+                <div class="quantity-row">
+                    <div class="field">
+                        <label for="quantity">Number of tiffins</label>
+                        <input id="quantity" name="quantity" type="number" min="1" max="20" value="1" required>
+                    </div>
+                    <div class="field">
+                        <label>Price</label>
+                        <input type="text" value="€{{ '%.2f'|format(item.price) }} / tiffin" readonly>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h3>Payment</h3>
+                    <p class="payment-intro">Choose how you would like to pay for your tiffin.</p>
+                    <div class="payment-options">
+                        {% for key, method in payment_methods.items() %}
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="{{ key }}" {% if loop.first %}checked{% endif %}>
+                            <span>
+                                <strong>{{ method.label }}</strong>
+                                <small>{{ method.description }}</small>
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Choose your pickup</h2>
+                <p class="card-intro">
+                    Select an active pickup slot for {{ item.date }}. Full slots cannot be selected.
+                </p>
+
+                <div class="slot-toolbar">
+                    <div class="field">
+                        <label for="locationFilter">Pickup location</label>
+                        <select id="locationFilter">
+                            <option value="all">All locations</option>
+                            {% for location in pickup_locations %}
+                                <option value="{{ location }}">{{ location }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="slot-count" id="slotCount"></div>
+                </div>
+
+                <div class="slots" id="slotList">
+                    {% if pickup_slots %}
+                        {% for location in pickup_locations %}
+                            {% set location_slots = pickup_slots | selectattr('location', 'equalto', location) | list %}
+                            {% if location_slots %}
+                                <section class="slot-group" data-group-location="{{ location }}">
+                                    <div class="slot-group-title">
+                                        <span>{{ location }}</span>
+                                        <span class="slot-group-count">{{ location_slots|length }} slots</span>
+                                    </div>
+
+                                    {% for slot in location_slots %}
+                                        {% set remaining = slot['maximum_orders'] - slot['current_orders'] %}
+                                        <div
+                                            class="slot-option{% if remaining <= 0 %} disabled{% endif %}"
+                                            data-location="{{ slot['location'] }}"
+                                        >
+                                            <input
+                                                type="radio"
+                                                id="slot-{{ slot['id'] }}"
+                                                name="pickup_slot_id"
+                                                value="{{ slot['id'] }}"
+                                                data-location="{{ slot['location'] }}"
+                                                data-start="{{ slot['start_time'] }}"
+                                                data-end="{{ slot['end_time'] }}"
+                                                data-capacity="{{ remaining }}"
+                                                {% if remaining <= 0 %}disabled{% endif %}
+                                                required
+                                            >
+                                            <label class="slot-label" for="slot-{{ slot['id'] }}">
+                                                <div class="slot-main">
+                                                    <div>
+                                                        <div class="slot-time">
+                                                            {{ slot['start_time'] }} – {{ slot['end_time'] }}
+                                                        </div>
+                                                        <div class="slot-location">{{ slot['location'] }}</div>
+                                                    </div>
+                                                    <div class="slot-status">
+                                                        <div class="selected-badge">SELECTED</div>
+                                                        <div class="capacity{% if remaining <= 0 %} full{% endif %}">
+                                                            {% if remaining <= 0 %}
+                                                                FULL
+                                                            {% elif remaining == 1 %}
+                                                                1 TIFFIN LEFT
+                                                            {% else %}
+                                                                {{ remaining }} TIFFINS LEFT
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </section>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-slots">
+                            <strong>No pickup slots are currently available.</strong>
+                            <div style="margin-top:7px;">Please check again later or choose another menu date.</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="submit-button" id="continueButton" disabled>
+                    CONTINUE TO ORDER SUMMARY →
+                </button>
+                <div class="selection-note" id="selectionNote">
+                    Select a pickup slot to continue.
+                </div>
+            </section>
+        </div>
+    </form>
+</main>
+
+<script>
+(function () {
+    const locationFilter = document.getElementById('locationFilter');
+    const slotGroups = Array.from(document.querySelectorAll('.slot-group'));
+    const slotOptions = Array.from(document.querySelectorAll('.slot-option'));
+    const slotInputs = Array.from(document.querySelectorAll('input[name="pickup_slot_id"]'));
+    const quantityInput = document.getElementById('quantity');
+    const continueButton = document.getElementById('continueButton');
+    const selectionNote = document.getElementById('selectionNote');
+    const slotCount = document.getElementById('slotCount');
+
+    function isVisible(option) {
+        return option.style.display !== 'none' && option.closest('.slot-group')?.hidden !== true;
+    }
+
+    function getSelected() {
+        return slotInputs.find(input =>
+            input.checked &&
+            !input.disabled &&
+            isVisible(input.closest('.slot-option'))
+        );
+    }
+
+    function updateFilter() {
+        const selectedLocation = locationFilter.value;
+        let count = 0;
+
+        slotGroups.forEach(group => {
+            const groupLocation = group.dataset.groupLocation;
+            const groupMatches = selectedLocation === 'all' || groupLocation === selectedLocation;
+            group.hidden = !groupMatches;
+
+            group.querySelectorAll('.slot-option').forEach(option => {
+                const matches = groupMatches && (
+                    selectedLocation === 'all' || option.dataset.location === selectedLocation
+                );
+                option.style.display = matches ? '' : 'none';
+                if (matches) count += 1;
+            });
+        });
+
+        const selected = slotInputs.find(input => input.checked);
+        if (selected && !isVisible(selected.closest('.slot-option'))) {
+            selected.checked = false;
+        }
+
+        slotCount.textContent = count + (count === 1 ? ' slot' : ' slots');
+        updateSelectionState();
+    }
+
+    function updateSelectionState() {
+        const selected = getSelected();
+
+        if (!selected) {
+            continueButton.disabled = true;
+            selectionNote.textContent = 'Select a pickup slot to continue.';
+            quantityInput.max = '20';
+            return;
+        }
+
+        const capacity = Number(selected.dataset.capacity || 0);
+        const location = selected.dataset.location || '';
+        const start = selected.dataset.start || '';
+        const end = selected.dataset.end || '';
+
+        quantityInput.max = String(Math.min(20, capacity));
+
+        if (Number(quantityInput.value) > capacity) {
+            quantityInput.value = capacity;
+        }
+
+        continueButton.disabled = false;
+        selectionNote.textContent = `${location} · ${start}–${end} selected. ${capacity} ${capacity === 1 ? 'tiffin remains' : 'tiffins remain'} in this pickup slot.`;
+    }
+
+    locationFilter.addEventListener('change', updateFilter);
+    slotInputs.forEach(input => input.addEventListener('change', updateSelectionState));
+    quantityInput.addEventListener('input', updateSelectionState);
+
+    document.getElementById('orderForm').addEventListener('submit', function (event) {
+        const selected = getSelected();
+        const quantity = Number(quantityInput.value);
+
+        if (!selected) {
+            event.preventDefault();
+            selectionNote.textContent = 'Please select a pickup slot.';
+            return;
+        }
+
+        const capacity = Number(selected.dataset.capacity || 0);
+        if (quantity < 1 || quantity > Math.min(20, capacity)) {
+            event.preventDefault();
+            selectionNote.textContent = 'Please choose a quantity within the remaining capacity.';
+        }
+    });
+
+    updateFilter();
+})();
+</script>
+</body>
+</html>

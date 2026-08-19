@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Radhe Tiffin — Admin
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <style>
+
+        /* ==================================================
+           ADMIN CONTROLS
+           ================================================== */
+
+        .admin-controls {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            align-items: flex-end;
+
+            gap: 14px;
+
+            margin-top: 10px;
+
+        }
+
+
+        .admin-control-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+        }
+
+
+        .admin-control-group label {
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.12em;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-control-group input,
+        .admin-control-group select {
+
+            height: 46px;
+
+            min-width: 230px;
+
+            padding: 0 14px;
+
+            border: 1px solid #e5e1db;
+
+            border-radius: 12px;
+
+            background: white;
+
+            font-size: 14px;
+
+            color: #2d241e;
+
+            outline: none;
+
+        }
+
+
+        .admin-control-group input:focus,
+        .admin-control-group select:focus {
+
+            border-color: #e98308;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(233, 131, 8, 0.10);
+
+        }
+
+
+        /* ==================================================
+           HEADER ACTIONS
+           ================================================== */
+
+        .admin-header-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+        }
+
+
+        .admin-logout-form {
+
+            margin: 0;
+
+        }
+
+
+        .admin-logout-button {
+
+            border: 1px solid #e5e1db;
+
+            background: white;
+
+            color: #5d5148;
+
+            padding: 8px 14px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .admin-logout-button:hover {
+
+            border-color: #e98308;
+
+            color: #b85e00;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        /* ==================================================
+           FILTERS
+           ================================================== */
+
+        .admin-filter-bar {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 30px 0 24px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .admin-filter-bar .admin-control-group {
+
+            margin: 0;
+
+        }
+
+
+        #order-search {
+
+            min-width: 320px;
+
+        }
+
+
+        .filter-button {
+
+            border: 1px solid #e5e1db;
+
+            background: white;
+
+            color: #5d5148;
+
+            padding: 10px 18px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .filter-button:hover {
+
+            border-color: #e98308;
+
+            color: #b85e00;
+
+        }
+
+
+        .filter-button.active {
+
+            background: #2d241e;
+
+            border-color: #2d241e;
+
+            color: white;
+
+        }
+
+
+        /* ==================================================
+           ORDER CARD
+           ================================================== */
+
+        .admin-order-card {
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease;
+
+        }
+
+
+        .admin-order-card.hidden {
+
+            display: none;
+
+        }
+
+
+        .admin-order-card.cancelled-order {
+
+            opacity: 0.70;
+        }
+
+        .allergen-order-alert {
+            margin: 18px 0 0;
+            padding: 14px 16px;
+            border: 1px solid #efc98f;
+            border-radius: 14px;
+            background: #fff8eb;
+            color: #5d5148;
+        }
+        .allergen-order-alert strong.alert-title { color:#8b4a00; font-size:12px; letter-spacing:.06em; text-transform:uppercase; }
+        .allergen-order-tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+        .allergen-order-tag { padding:5px 8px; border-radius:999px; background:#fff0d5; color:#8b4a00; font-size:10px; font-weight:900; }
+        .allergen-order-item { margin-top:8px; font-size:12px; }
+
+
+        }
+
+
+        /* ==================================================
+           STATUS BADGES
+           ================================================== */
+
+        .status,
+        .payment-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.08em;
+
+        }
+
+
+        .status-confirmed {
+
+            background: #fff1d9;
+
+            color: #b45c00;
+
+        }
+
+
+        .status-ready {
+
+            background: #eaf5df;
+
+            color: #47712c;
+
+        }
+
+
+        .status-completed {
+
+            background: #e6f4ec;
+
+            color: #256044;
+
+        }
+
+
+        .status-cancelled {
+
+            background: #fbe8e5;
+
+            color: #a73c32;
+
+        }
+
+
+        .payment-paid {
+
+            background: #e7f4ed;
+
+            color: #276347;
+
+        }
+
+
+        .payment-unpaid {
+
+            background: #fff0e2;
+
+            color: #a95a0c;
+
+        }
+
+        .payment-pending {
+            background: #fff6d9;
+            color: #8a6a00;
+        }
+
+
+        /* ==================================================
+           ACTION AREA
+           ================================================== */
+
+        .admin-order-actions {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding-top: 18px;
+
+            margin-top: 16px;
+
+            border-top: 1px solid #eee8e1;
+
+        }
+
+
+        .admin-status-group {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .admin-action-group {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .admin-action-form {
+
+            margin: 0;
+
+        }
+
+
+        .admin-action-button {
+
+            border: none;
+
+            border-radius: 999px;
+
+            padding: 9px 15px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.06em;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .admin-action-button:hover {
+
+            transform: translateY(-1px);
+
+        }
+
+
+        .admin-action-button:active {
+
+            transform: translateY(0);
+
+        }
+
+
+        .action-ready {
+
+            background: #fff0d5;
+
+            color: #a95a00;
+
+        }
+
+
+        .action-complete {
+
+            background: #e5f4eb;
+
+            color: #276347;
+
+        }
+
+
+        .action-cancel {
+
+            background: #f9e4e1;
+
+            color: #a43d34;
+
+        }
+
+
+        .action-paid {
+
+            background: #e6f4eb;
+
+            color: #276347;
+
+        }
+
+
+        .action-unpaid {
+
+            background: #fff0e2;
+
+            color: #a95a0c;
+
+        }
+
+
+        /* ==================================================
+           COMPLETED / CANCELLED MESSAGE
+           ================================================== */
+
+        .completed-note {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 9px 14px;
+
+            border-radius: 999px;
+
+            background: #e7f4ed;
+
+            color: #276347;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.07em;
+
+        }
+
+
+        .cancelled-note {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 9px 14px;
+
+            border-radius: 999px;
+
+            background: #fbe8e5;
+
+            color: #a73c32;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.07em;
+
+        }
+
+
+        /* ==================================================
+           SEARCH EMPTY
+           ================================================== */
+
+        .no-search-results {
+
+            display: none;
+
+            text-align: center;
+
+            padding: 50px 20px;
+
+            background: white;
+
+            border: 1px solid #e8e2da;
+
+            border-radius: 20px;
+
+            color: #665b53;
+
+        }
+
+
+        .no-search-results.visible {
+
+            display: block;
+
+        }
+
+
+        /* ==================================================
+           ADMIN EMPTY
+           ================================================== */
+
+        .admin-empty {
+
+            background: white;
+
+            border: 1px solid #e8e2da;
+
+            border-radius: 20px;
+
+            padding: 60px 20px;
+
+            text-align: center;
+
+        }
+
+
+        .admin-empty-icon {
+
+            width: 54px;
+
+            height: 54px;
+
+            margin: 0 auto 18px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 50%;
+
+            background: #e7f4ed;
+
+            color: #276347;
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+        }
+
+
+        .admin-empty h3 {
+
+            margin: 0 0 8px;
+
+        }
+
+
+        .admin-empty p {
+
+            margin: 0;
+
+            color: #766a61;
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+           ================================================== */
+
+        @media (max-width: 800px) {
+
+            .admin-controls {
+
+                justify-content: stretch;
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            .admin-control-group input,
+            .admin-control-group select {
+
+                width: 100%;
+
+                min-width: 0;
+
+            }
+
+
+            #order-search {
+
+                min-width: 0;
+
+            }
+
+
+            .admin-order-actions {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .admin-action-group {
+
+                width: 100%;
+
+                justify-content: flex-start;
+
+            }
+
+
+            .admin-header-actions {
+
+                gap: 8px;
+
+            }
+
+
+            .admin-home-link {
+
+                display: none;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .admin-filter-bar {
+
+                align-items: stretch;
+
+            }
+
+
+            .admin-filter-bar .admin-control-group {
+
+                width: 100%;
+
+            }
+
+
+            .filter-button {
+
+                flex: 1;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="admin-body">
+
+
+<!-- ==================================================
+     ADMIN HEADER
+     ================================================== -->
+
+<header class="admin-header">
+
+    <div class="admin-header-inner">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="/"
+            class="logo"
+        >
+
+            <span class="logo-circle">
+                R
+            </span>
+
+            <span class="logo-text">
+                RADHE
+                <strong>TIFFIN</strong>
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <div class="admin-title">
+            ADMIN
+        </div>
+
+
+        <!-- HEADER ACTIONS -->
+
+        <div class="admin-header-actions">
+
+            <a
+                href="/admin/catering"
+                class="admin-home-link"
+            >
+                Catering →
+            </a>
+
+
+            <a
+                href="{{ url_for('admin_finance') }}"
+                class="admin-home-link"
+            >
+                Finance & Excel →
+            </a>
+
+            <a href="/admin/customers" class="admin-home-link">Customers →</a>
+            <a href="/admin/menu" class="admin-home-link">Menu →</a>
+            <a href="/admin/allergens" class="admin-home-link">Allergens →</a>
+            <a href="/admin/settings" class="admin-home-link">Settings →</a>
+            <a href="/admin/backup" class="admin-home-link">Backup →</a>
+            <a href="{{ url_for('admin_production_readiness') }}" class="admin-home-link">Production Readiness →</a>
+
+            <a
+                href="/"
+                class="admin-home-link"
+            >
+                View website →
+            </a>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('admin_logout') }}"
+                class="admin-logout-form"
+            >
+
+                <button
+                    type="submit"
+                    class="admin-logout-button"
+                >
+                    LOGOUT
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     MAIN
+     ================================================== -->
+
+<main class="admin-container">
+
+
+    <!-- ==================================================
+         PAGE HEADING
+         ================================================== -->
+
+    <div class="admin-page-heading">
+
+        <div>
+
+            <div class="eyebrow">
+                RADHE TIFFIN
+            </div>
+
+
+            <h1>
+                Dashboard
+            </h1>
+
+
+            <p>
+                {{ selected_day }}
+                orders and pickup overview.
+            </p>
+
+        </div>
+
+
+        <!-- DATE SELECTOR -->
+
+        <div class="admin-controls">
+
+            <div class="admin-control-group">
+
+                <label for="pickup-date">
+                    Pickup date
+                </label>
+
+
+                <select
+                    id="pickup-date"
+                    onchange="
+                        window.location.href =
+                        '/admin?date=' +
+                        encodeURIComponent(this.value)
+                    "
+                >
+
+                    {% for date_option in available_dates %}
+
+                        <option
+                            value="{{ date_option.date }}"
+                            {% if date_option.date == selected_date %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ date_option.date }}
+                            -
+                            {{ date_option.day }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         STATISTICS
+         ================================================== -->
+
+    <section class="admin-stats">
+
+
+        <!-- ORDERS -->
+
+        <div class="admin-stat-card">
+
+            <span class="admin-stat-label">
+                ORDERS
+            </span>
+
+
+            <strong>
+                {{ stats["total_orders"] }}
+            </strong>
+
+
+            <small>
+                orders
+            </small>
+
+        </div>
+
+
+        <!-- TIFFINS -->
+
+        <div class="admin-stat-card">
+
+            <span class="admin-stat-label">
+                TIFFINS
+            </span>
+
+
+            <strong>
+                {{ stats["total_tiffins"] }}
+            </strong>
+
+
+            <small>
+                tiffins to prepare
+            </small>
+
+        </div>
+
+
+        <!-- REVENUE -->
+
+        <div class="admin-stat-card">
+
+            <span class="admin-stat-label">
+                REVENUE
+            </span>
+
+
+            <strong>
+
+                €{{ "%.2f"|format(
+                    stats["total_revenue"]
+                ) }}
+
+            </strong>
+
+
+            <small>
+                selected day's orders
+            </small>
+
+        </div>
+
+
+        <!-- UNPAID -->
+
+        <div class="admin-stat-card warning">
+
+            <span class="admin-stat-label">
+                UNPAID
+            </span>
+
+
+            <strong>
+                {{ unpaid["unpaid_orders"] }}
+            </strong>
+
+
+            <small>
+                orders
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ORDERS
+         ================================================== -->
+
+    <section class="admin-orders-section">
+
+
+        <!-- SECTION HEADING -->
+
+        <div class="admin-section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    {{ selected_day|upper }}
+                </div>
+
+
+                <h2>
+                    Pickup orders
+                </h2>
+
+            </div>
+
+
+            <span
+                class="order-count"
+                id="visible-order-count"
+            >
+
+                {{ orders|length }}
+
+                {% if orders|length == 1 %}
+                    order
+                {% else %}
+                    orders
+                {% endif %}
+
+            </span>
+
+        </div>
+
+
+        <!-- ==================================================
+             SEARCH + FILTER
+             ================================================== -->
+
+        <div class="admin-filter-bar">
+
+
+            <!-- SEARCH -->
+
+            <div class="admin-control-group">
+
+                <input
+                    type="search"
+                    id="order-search"
+                    placeholder="Search customer or order number..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- ALL -->
+
+            <button
+                type="button"
+                class="filter-button active"
+                data-filter="all"
+            >
+                All
+            </button>
+
+
+            <!-- CONFIRMED -->
+
+            <button
+                type="button"
+                class="filter-button"
+                data-filter="confirmed"
+            >
+                Confirmed
+            </button>
+
+
+            <!-- READY -->
+
+            <button
+                type="button"
+                class="filter-button"
+                data-filter="ready"
+            >
+                Ready
+            </button>
+
+
+            <!-- COMPLETED -->
+
+            <button
+                type="button"
+                class="filter-button"
+                data-filter="completed"
+            >
+                Completed
+            </button>
+
+
+            <!-- CANCELLED -->
+
+            <button
+                type="button"
+                class="filter-button"
+                data-filter="cancelled"
+            >
+                Cancelled
+            </button>
+
+        </div>
+
+
+        {% if orders %}
+
+
+            <!-- ==================================================
+                 ORDER LIST
+                 ================================================== -->
+
+            <div
+                class="admin-orders"
+                id="admin-orders"
+            >
+
+
+                {% for order in orders %}
+
+
+                    <article
+                        class="
+                            admin-order-card
+                            {% if order['status'] == 'cancelled' %}
+                                cancelled-order
+                            {% endif %}
+                        "
+
+                        data-status="{{ order['status'] }}"
+
+                        data-search="
+                            {{ order['order_number'] }}
+                            {{ order['first_name'] }}
+                            {{ order['last_name'] }}
+                            {{ order['email'] }}
+                            {{ order['phone'] }}
+                            {{ order['meal_name'] }}
+                            {{ order['pickup_location'] }}
+                        "
+                    >
+
+
+                        <!-- ==================================================
+                             ORDER TOP
+                             ================================================== -->
+
+                        <div class="admin-order-top">
+
+
+                            <div>
+
+                                <span class="admin-order-number">
+                                    {{ order["order_number"] }}
+                                </span>
+
+
+                                <h3>
+
+                                    {{ order["first_name"] }}
+                                    {{ order["last_name"] }}
+
+                                </h3>
+
+                            </div>
+
+
+                            <div class="admin-order-total">
+
+                                €{{ "%.2f"|format(
+                                    order["total_amount"]
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ORDER INFORMATION
+                             ================================================== -->
+
+                        <div class="admin-order-details">
+
+
+                            <!-- TIFFIN -->
+
+                            <div class="admin-order-detail">
+
+                                <span>
+                                    TIFFIN
+                                </span>
+
+
+                                <strong>
+                                    {{ order["meal_name"] }}
+                                </strong>
+
+                            </div>
+
+
+                            <!-- QUANTITY -->
+
+                            <div class="admin-order-detail">
+
+                                <span>
+                                    QUANTITY
+                                </span>
+
+
+                                <strong>
+                                    {{ order["quantity"] }}
+                                </strong>
+
+                            </div>
+
+
+                            <!-- PICKUP -->
+
+                            <div class="admin-order-detail">
+
+                                <span>
+                                    PICKUP
+                                </span>
+
+
+                                <strong>
+                                    📍 {{ order["pickup_location"] }}
+                                </strong>
+
+                            </div>
+
+
+                            <!-- TIME -->
+
+                            <div class="admin-order-detail">
+
+                                <span>
+                                    TIME
+                                </span>
+
+
+                                <strong>
+                                    🕐 {{ order["pickup_time"].replace(" Uhr", "") }} Uhr
+                                </strong>
+
+                            </div>
+
+                            {% if order["package_number"] %}
+                            <div class="admin-order-detail">
+                                <span>PACKAGE</span>
+                                <strong>{{ order["package_number"] }} · {{ order["frequency"] }}×/week</strong>
+                            </div>
+                            {% endif %}
+
+                            <div class="admin-order-detail">
+                                <span>PAYMENT METHOD</span>
+                                <strong>{{ order["payment_method"]|replace("_", " ")|title }}</strong>
+                            </div>
+
+
+                        </div>
+
+                        {% if order["allergen_items"] %}
+                        <div class="allergen-order-alert">
+                            <strong class="alert-title">⚠ VERIFIED ALLERGENS BY DISH</strong>
+                            {% for entry in order["allergen_items"] %}
+                            <div class="allergen-order-item"><strong>{{ entry.name }}</strong><div class="allergen-order-tags">{% for allergen in entry.allergens %}<span class="allergen-order-tag">{{ allergen }}</span>{% endfor %}</div></div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if order["customer_allergen_requests"] %}
+                        <div class="allergen-order-alert" style="border-color:#e98308;background:#fff8eb;">
+                            <strong class="alert-title">⚠ CUSTOMER-REPORTED ALLERGY / INTOLERANCE</strong>
+                            <div class="allergen-order-tags">{% for label in order["customer_allergen_requests"] %}<span class="allergen-order-tag">{{ label }}</span>{% endfor %}</div>
+                            <div style="margin-top:8px;font-size:11px;color:#8b4a00;font-weight:700;">These selections apply to the customer's entire tiffin. They are a customer request, not a claim that every dish contains the allergen.</div>
+                        </div>
+
+                        {% if order["allergen_matches"] %}
+                        <div class="allergen-order-alert" style="border-color:#c84a32;background:#fff2ef;">
+                            <strong class="alert-title" style="color:#9c2f1b;">⚠ AFFECTED DISHES — REVIEW BEFORE PREPARATION</strong>
+                            <div style="margin-top:6px;font-size:11px;color:#9c2f1b;font-weight:700;">These are the dishes whose verified recipe allergens match the customer's selected allergy/intolerance:</div>
+                            {% for match in order["allergen_matches"] %}
+                            <div class="allergen-order-item"><strong>{{ match.name }}</strong><div class="allergen-order-tags">{% for allergen in match.allergens %}<span class="allergen-order-tag" style="background:#ffe0da;color:#9c2f1b;">{{ allergen }}</span>{% endfor %}</div></div>
+                            {% endfor %}
+                            <div style="margin-top:8px;font-size:11px;color:#9c2f1b;font-weight:800;">Review these recipes and confirm with the customer before preparing. Do not promise an allergen-free meal.</div>
+                        </div>
+                        {% else %}
+                        <div class="allergen-order-alert" style="border-color:#d9c6a8;background:#fffaf2;">
+                            <strong class="alert-title">CUSTOMER ALLERGY — NO VERIFIED DISH MATCH</strong>
+                            <div style="margin-top:6px;font-size:11px;color:#6b5848;font-weight:700;">No dish in this tiffin is currently marked with the customer's selected allergen(s). Still review the actual recipes and supplier ingredients before preparation.</div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+
+                        <!-- ==================================================
+                             CUSTOMER INFORMATION
+                             ================================================== -->
+
+                        <div class="admin-customer">
+
+
+                            <!-- CUSTOMER -->
+
+                            <div>
+
+                                <span>
+                                    CUSTOMER
+                                </span>
+
+
+                                <strong>
+
+                                    {{ order["first_name"] }}
+                                    {{ order["last_name"] }}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div>
+
+                                <span>
+                                    PHONE
+                                </span>
+
+
+                                <strong>
+                                    {{ order["phone"] }}
+                                </strong>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div>
+
+                                <span>
+                                    EMAIL
+                                </span>
+
+
+                                <strong>
+                                    {{ order["email"] }}
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             STATUS + ACTIONS
+                             ================================================== -->
+
+                        <div class="admin-order-actions">
+
+
+                            <!-- STATUS BADGES -->
+
+                            <div class="admin-status-group">
+
+
+                                <!-- ORDER STATUS -->
+
+                                <span
+                                    class="
+                                        status
+                                        status-{{ order['status'] }}
+                                    "
+                                >
+
+                                    {% if order["status"] == "confirmed" %}
+
+                                        CONFIRMED
+
+                                    {% elif order["status"] == "ready" %}
+
+                                        READY
+
+                                    {% elif order["status"] == "completed" %}
+
+                                        COMPLETED
+
+                                    {% elif order["status"] == "cancelled" %}
+
+                                        CANCELLED
+
+                                    {% endif %}
+
+                                </span>
+
+
+                                <!-- PAYMENT STATUS -->
+
+                                <span
+                                    class="
+                                        payment-status
+                                        payment-{{ order['payment_status'] }}
+                                    "
+                                >
+
+                                    PAYMENT:
+                                    {{ order["payment_status"]|upper }}
+
+                                </span>
+
+
+                            </div>
+
+
+                            <!-- ACTIONS -->
+
+                            <div class="admin-action-group">
+
+
+                                <!-- ==================================================
+                                     CONFIRMED → READY
+                                     ================================================== -->
+
+                                {% if order["status"] == "confirmed" %}
+
+
+                                    <form
+                                        method="POST"
+                                        action="/admin/order/{{ order['id'] }}/status"
+                                        class="admin-action-form"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="ready"
+                                        >
+
+
+                                        <button
+                                            type="submit"
+                                            class="
+                                                admin-action-button
+                                                action-ready
+                                            "
+                                        >
+                                            MARK READY
+                                        </button>
+
+                                    </form>
+
+
+                                <!-- ==================================================
+                                     READY → COMPLETED
+                                     ================================================== -->
+
+                                {% elif order["status"] == "ready" %}
+
+
+                                    <form
+                                        method="POST"
+                                        action="/admin/order/{{ order['id'] }}/status"
+                                        class="admin-action-form"
+
+                                        onsubmit="
+                                            return confirm(
+                                                'Complete this order?'
+                                            );
+                                        "
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="completed"
+                                        >
+
+
+                                        <button
+                                            type="submit"
+                                            class="
+                                                admin-action-button
+                                                action-complete
+                                            "
+                                        >
+                                            COMPLETE
+                                        </button>
+
+                                    </form>
+
+
+                                <!-- ==================================================
+                                     COMPLETED
+                                     ================================================== -->
+
+                                {% elif order["status"] == "completed" %}
+
+
+                                    <span class="completed-note">
+                                        ✓ ORDER COMPLETED
+                                    </span>
+
+
+                                <!-- ==================================================
+                                     CANCELLED
+                                     ================================================== -->
+
+                                {% elif order["status"] == "cancelled" %}
+
+
+                                    <span class="cancelled-note">
+                                        ✕ ORDER CANCELLED
+                                    </span>
+
+
+                                {% endif %}
+
+
+                                <!-- ==================================================
+                                     PAYMENT
+                                     ================================================== -->
+
+                                {% if order["status"] != "cancelled"
+                                    and order["status"] != "completed" %}
+
+
+                                    {% if order["payment_status"] == "unpaid" %}
+
+
+                                        <!-- MARK PAID -->
+
+                                        <form
+                                            method="POST"
+                                            action="/admin/order/{{ order['id'] }}/payment"
+                                            class="admin-action-form"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="payment_status"
+                                                value="paid"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    admin-action-button
+                                                    action-paid
+                                                "
+                                            >
+                                                MARK PAID
+                                            </button>
+
+                                        </form>
+
+
+                                    {% else %}
+
+
+                                        <!-- MARK UNPAID -->
+
+                                        <form
+                                            method="POST"
+                                            action="/admin/order/{{ order['id'] }}/payment"
+                                            class="admin-action-form"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="payment_status"
+                                                value="unpaid"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    admin-action-button
+                                                    action-unpaid
+                                                "
+                                            >
+                                                MARK UNPAID
+                                            </button>
+
+                                        </form>
+
+
+                                    {% endif %}
+
+
+                                {% endif %}
+
+
+                                <!-- ==================================================
+                                     CANCEL ORDER
+                                     ================================================== -->
+
+                                {% if order["status"] == "confirmed"
+                                    or order["status"] == "ready" %}
+
+
+                                    <form
+                                        method="POST"
+                                        action="/admin/order/{{ order['id'] }}/status"
+                                        class="admin-action-form"
+
+                                        onsubmit="
+                                            return confirm(
+                                                'Cancel this order? This will release the pickup slot capacity.'
+                                            );
+                                        "
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="cancelled"
+                                        >
+
+
+                                        <button
+                                            type="submit"
+                                            class="
+                                                admin-action-button
+                                                action-cancel
+                                            "
+                                        >
+                                            CANCEL ORDER
+                                        </button>
+
+                                    </form>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+                        </div>
+
+
+                    </article>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 NO SEARCH RESULTS
+                 ================================================== -->
+
+            <div
+                class="no-search-results"
+                id="no-search-results"
+            >
+
+                <h3>
+                    No matching orders
+                </h3>
+
+
+                <p>
+                    Try another customer name,
+                    order number or filter.
+                </p>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- ==================================================
+                 NO ORDERS
+                 ================================================== -->
+
+            <div class="admin-empty">
+
+                <div class="admin-empty-icon">
+                    ✓
+                </div>
+
+
+                <h3>
+                    No orders yet
+                </h3>
+
+
+                <p>
+                    Customer orders for this date
+                    will appear here.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+<!-- ==================================================
+     SEARCH + FILTER JAVASCRIPT
+     ================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const searchInput =
+            document.getElementById(
+                "order-search"
+            );
+
+
+        const orderCards =
+            Array.from(
+                document.querySelectorAll(
+                    ".admin-order-card"
+                )
+            );
+
+
+        const filterButtons =
+            Array.from(
+                document.querySelectorAll(
+                    ".filter-button"
+                )
+            );
+
+
+        const emptyMessage =
+            document.getElementById(
+                "no-search-results"
+            );
+
+
+        const countElement =
+            document.getElementById(
+                "visible-order-count"
+            );
+
+
+        let activeFilter = "all";
+
+
+        /* ==================================================
+           UPDATE ORDERS
+           ================================================== */
+
+        function updateOrders() {
+
+
+            const searchText =
+                searchInput
+                    ? searchInput.value
+                        .toLowerCase()
+                        .trim()
+                    : "";
+
+
+            let visibleCount = 0;
+
+
+            orderCards.forEach(
+                function (card) {
+
+
+                    const status =
+                        card.dataset.status
+                            .toLowerCase();
+
+
+                    const searchData =
+                        card.dataset.search
+                            .toLowerCase();
+
+
+                    const matchesFilter =
+                        activeFilter === "all"
+                        ||
+                        status === activeFilter;
+
+
+                    const matchesSearch =
+                        searchText === ""
+                        ||
+                        searchData.includes(
+                            searchText
+                        );
+
+
+                    if (
+                        matchesFilter
+                        &&
+                        matchesSearch
+                    ) {
+
+                        card.classList.remove(
+                            "hidden"
+                        );
+
+                        visibleCount++;
+
+                    } else {
+
+                        card.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* ==================================================
+               EMPTY SEARCH MESSAGE
+               ================================================== */
+
+            if (emptyMessage) {
+
+                if (visibleCount === 0) {
+
+                    emptyMessage.classList.add(
+                        "visible"
+                    );
+
+                } else {
+
+                    emptyMessage.classList.remove(
+                        "visible"
+                    );
+
+                }
+
+            }
+
+
+            /* ==================================================
+               ORDER COUNT
+               ================================================== */
+
+            if (countElement) {
+
+                countElement.textContent =
+                    visibleCount
+                    +
+                    (
+                        visibleCount === 1
+                            ? " order"
+                            : " orders"
+                    );
+
+            }
+
+        }
+
+
+        /* ==================================================
+           FILTER BUTTONS
+           ================================================== */
+
+        filterButtons.forEach(
+            function (button) {
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+
+                        filterButtons.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        activeFilter =
+                            button.dataset.filter;
+
+
+                        updateOrders();
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* ==================================================
+           SEARCH
+           ================================================== */
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                updateOrders
+            );
+
+        }
+
+
+        /* ==================================================
+           INITIAL UPDATE
+           ================================================== */
+
+        updateOrders();
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

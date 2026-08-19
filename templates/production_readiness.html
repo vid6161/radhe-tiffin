@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radhe Tiffin — Production Readiness</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{background:#f7f5f1}.wrap{max-width:1050px;margin:0 auto;padding:32px 20px 60px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:24px}.muted{color:#6d675f}.links{display:flex;gap:8px;flex-wrap:wrap}.button{display:inline-block;padding:10px 14px;border-radius:9px;background:#fff;border:1px solid #ddd5ca;text-decoration:none;color:#3c352d;font-weight:800;font-size:13px}.hero{background:#fff;border:1px solid #e5dfd6;border-radius:18px;padding:24px;margin-bottom:18px}.status{display:inline-flex;padding:8px 12px;border-radius:999px;font-weight:900;font-size:12px}.ready{background:#e8f7ed;color:#176b39}.notready{background:#fff0e9;color:#9b3c19}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#fff;border:1px solid #e5dfd6;border-radius:14px;padding:17px}.card.ok{border-left:5px solid #31965b}.card.bad{border-left:5px solid #d55d32}.card.review{border-left:5px solid #d6a53b}.row{display:flex;justify-content:space-between;gap:15px}.name{font-weight:900}.badge{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.detail{margin-top:8px;color:#6d675f;line-height:1.5;font-size:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.stat{padding:14px;background:#faf8f5;border-radius:12px}.stat strong{display:block;font-size:22px}.stat span{font-size:12px;color:#756e65}@media(max-width:700px){.grid,.stats{grid-template-columns:1fr}.top{flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="top">
+<div><div style="font-size:11px;font-weight:900;letter-spacing:.16em;color:#bd6200">RADHE TIFFIN · ADMIN</div><h1>Production Readiness</h1><p class="muted">Pre-launch checks for business configuration, security, data and deployment.</p></div>
+<div class="links"><a class="button" href="{{ url_for('admin_dashboard') }}">Dashboard</a><a class="button" href="{{ url_for('admin_settings') }}">Settings</a><a class="button" href="{{ url_for('admin_backup') }}">Backup</a></div>
+</div>
+<div class="hero">
+<div class="status {{ 'ready' if overall_ready else 'notready' }}">{{ 'READY FOR PRODUCTION REVIEW' if overall_ready else 'NOT READY — ACTION REQUIRED' }}</div>
+<h2>{{ passed_required }}/{{ required_total }} required checks passed</h2>
+<p class="muted">This page never displays secret values. Stripe remains optional until online card payments are intentionally enabled.</p>
+<div class="stats"><div class="stat"><strong>{{ order_count }}</strong><span>Existing orders — review test data before launch</span></div><div class="stat"><strong>{{ customer_count }}</strong><span>Customers in database</span></div><div class="stat"><strong>{{ 'Configured' if stripe_configured else 'Not configured' }}</strong><span>Stripe</span></div></div>
+</div>
+<div class="grid">
+{% for c in checks %}
+<div class="card {{ 'ok' if c.ok else ('review' if c.severity == 'review' else 'bad') }}">
+<div class="row"><div class="name">{{ c.name }}</div><div class="badge">{{ 'PASS' if c.ok else ('REVIEW' if c.severity == 'review' else ('OPTIONAL' if c.severity == 'optional' else 'ACTION')) }}</div></div>
+<div class="detail">{{ c.detail }}</div>
+</div>
+{% endfor %}
+</div>
+</main>
+</body>
+</html>

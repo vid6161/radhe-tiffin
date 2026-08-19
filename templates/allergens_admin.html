@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radhe Tiffin — Allergens</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{background:#fffaf2;color:#2d241e}.allergen-wrap{max-width:1000px;margin:40px auto;padding:0 22px}.allergen-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:24px}.allergen-head h1{margin:0 0 8px}.allergen-head p{margin:0;color:#665b53}.allergen-links{display:flex;gap:14px;flex-wrap:wrap;white-space:nowrap}.allergen-links a{color:#bd6200;text-decoration:none;font-weight:700}.allergen-card{background:#fff;border:1px solid #e7dfd4;border-radius:18px;padding:22px;margin-bottom:16px}.allergen-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:16px}.allergen-title strong{font-size:16px}.allergen-title small{color:#665b53}.allergen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;margin-bottom:18px}.allergen-check{display:flex;align-items:center;gap:9px;min-height:42px;padding:9px 11px;border:1px solid #eee1d5;border-radius:10px;background:#fffdf9;cursor:pointer;font-size:14px;font-weight:600;color:#4d443d}.allergen-check:hover{border-color:#e98308;background:#fffaf2}.allergen-check input[type="checkbox"]{appearance:auto!important;width:16px!important;height:16px!important;min-width:16px!important;margin:0!important;padding:0!important;border:initial!important;box-shadow:none!important;accent-color:#e98308;cursor:pointer}.allergen-save{border:0;border-radius:999px;padding:11px 18px;background:#2d241e;color:#fff;font-weight:800;cursor:pointer}.allergen-save:hover{background:#bd6200}.allergen-empty{background:#fff;border:1px solid #e7dfd4;border-radius:18px;padding:22px}@media(max-width:800px){.allergen-head{align-items:flex-start;flex-direction:column}.allergen-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.allergen-links{white-space:normal}}@media(max-width:520px){.allergen-grid{grid-template-columns:1fr}.allergen-wrap{margin:24px auto;padding:0 14px}}
+</style>
+</head>
+<body>
+<div class="allergen-wrap">
+<div class="allergen-head">
+<div><div class="eyebrow">RADHE TIFFIN</div><h1>Allergen Management</h1><p>Set verified allergens for every active menu item. Do not guess — confirm against the actual recipe.</p></div>
+<div class="allergen-links"><a href="/admin">Dashboard</a><a href="/admin/menu">Menu</a><a href="/admin/settings">Settings</a></div>
+</div>
+{% for item in items %}
+<form method="post" class="allergen-card">
+<input type="hidden" name="menu_item_id" value="{{ item.id }}">
+<div class="allergen-title"><strong>{{ item.meal_name }} — {{ item.item_name }}</strong><small>· {{ item.menu_date }}</small></div>
+<div class="allergen-grid">
+{% for code,label in allergens.items() %}
+<label class="allergen-check"><input type="checkbox" name="allergens" value="{{ code }}" {% if code in selected.get(item.id, []) %}checked{% endif %}><span>{{ label }}</span></label>
+{% endfor %}
+</div>
+<button type="submit" class="allergen-save">Save allergens</button>
+</form>
+{% else %}<div class="allergen-empty">No active menu items.</div>{% endfor %}
+</div>
+</body>
+</html>

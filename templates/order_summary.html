@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary | Radhe Tiffin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { margin:0; background:#fffaf2; color:#2d241e; font-family:Arial,Helvetica,sans-serif; }
+        .header { height:74px; border-bottom:1px solid #e8e2da; background:#fffaf2; }
+        .header-inner { max-width:1050px; height:100%; margin:auto; padding:0 22px; display:flex; align-items:center; justify-content:space-between; }
+        .logo { display:flex; align-items:center; gap:10px; color:#2d241e; text-decoration:none; font-weight:900; letter-spacing:.12em; }
+        .logo-circle { width:40px; height:40px; border-radius:50%; background:#e98308; color:#fff; display:grid; place-items:center; font-size:20px; }
+        .logo strong { color:#bd6200; }
+        .back { color:#2d241e; text-decoration:none; font-size:13px; font-weight:800; }
+        .container { max-width:780px; margin:auto; padding:58px 22px 80px; }
+        .eyebrow { color:#bd6200; font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; }
+        h1 { font-size:42px; margin:8px 0 8px; }
+        .intro { color:#665b53; margin-bottom:28px; }
+        .card { background:#fff; border:1px solid #e8e2da; border-radius:22px; padding:28px; box-shadow:0 12px 30px rgba(45,36,30,.04); }
+        .row { display:flex; justify-content:space-between; gap:20px; padding:15px 0; border-bottom:1px solid #eee8e1; }
+        .row:last-child { border-bottom:0; }
+        .label { color:#665b53; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+        .value { font-weight:800; text-align:right; }
+        .total { margin-top:20px; padding-top:20px; border-top:1px solid #e8e2da; display:flex; justify-content:space-between; align-items:center; }
+        .total span:first-child { font-size:12px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
+        .total strong { font-size:30px; }
+        .actions { display:flex; gap:10px; margin-top:24px; }
+        .button { height:48px; border-radius:999px; padding:0 22px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; font-size:11px; font-weight:900; letter-spacing:.08em; cursor:pointer; }
+        .primary { border:0; background:#2d241e; color:#fff; flex:1; }
+        .primary:hover { background:#bd6200; }
+        .secondary { border:1px solid #e5e1db; background:#fff; color:#2d241e; }
+        .note { margin-top:14px; color:#665b53; font-size:12px; text-align:center; }
+        .payment-box{margin-top:18px;padding:16px;border:1px solid #ead7bb;background:#fff8eb;border-radius:14px;color:#5d5148;font-size:12px;line-height:1.7}
+        .payment-box p{margin:4px 0 8px}
+        .allergen-box{margin-top:18px;padding:16px;border:1px solid #efc98f;background:#fff8eb;border-radius:14px;color:#5d5148;font-size:12px;line-height:1.6}
+        .allergen-box h3{margin:0 0 6px;color:#8b4a00;font-size:15px}.allergen-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}.allergen-tag{padding:6px 9px;border-radius:999px;background:#fff0d5;color:#8b4a00;font-size:11px;font-weight:900}.allergen-item{margin-top:10px}.allergen-item strong{display:block;margin-bottom:4px}
+        @media(max-width:600px){ .row{display:block}.value{text-align:left;margin-top:5px}.actions{flex-direction:column}.secondary{width:100%} }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><span class="logo-circle">R</span><span>RADHE <strong>TIFFIN</strong></span></a>
+        <a href="{{ url_for('order', day=item.day|lower) }}" class="back">← Change selection</a>
+    </div>
+</header>
+
+<main class="container">
+    <div class="eyebrow">RADHE TIFFIN · ORDER SUMMARY</div>
+    <h1>Review your order</h1>
+    <p class="intro">Please check the details before placing your order.</p>
+
+    <section class="card">
+        <div class="row"><span class="label">Tiffin</span><span class="value">{{ item.name }}</span></div>
+        <div class="row"><span class="label">Pickup date</span><span class="value">{{ pickup_date }}</span></div>
+        <div class="row"><span class="label">Pickup location</span><span class="value">{{ location }}</span></div>
+        <div class="row"><span class="label">Pickup time</span><span class="value">{{ pickup_time }}</span></div>
+        <div class="row"><span class="label">Quantity</span><span class="value">{{ quantity }} tiffin{% if quantity != 1 %}s{% endif %}</span></div>
+        <div class="row"><span class="label">Customer</span><span class="value">{{ first_name }} {{ last_name }}</span></div>
+        <div class="row"><span class="label">Email</span><span class="value">{{ email }}</span></div>
+        <div class="row"><span class="label">Phone</span><span class="value">{{ phone }}</span></div>
+        <div class="row"><span class="label">Payment</span><span class="value">{{ payment_method_label }}</span></div>
+
+        {% if customer_allergen_labels %}
+        <div class="allergen-box">
+            <h3>⚠ Your allergy / intolerance request</h3>
+            <div>You selected:</div>
+            <div class="allergen-tags">{% for label in customer_allergen_labels %}<span class="allergen-tag">{{ label }}</span>{% endfor %}</div>
+            <div style="margin-top:10px;font-weight:800;color:#8b4a00;">These requests apply to your entire tiffin. Our team will see them with your order. This does not guarantee an allergen-free meal.</div>
+        </div>
+        {% endif %}
+
+        {% if allergen_items %}
+        <div class="allergen-box">
+            <h3>⚠ Verified allergen information</h3>
+            <div>Please review the allergens below before placing your order.</div>
+            {% for entry in allergen_items %}<div class="allergen-item"><strong>{{ entry.name }}</strong><div class="allergen-tags">{% for allergen in entry.allergens %}<span class="allergen-tag">{{ allergen }}</span>{% endfor %}</div></div>{% endfor %}
+            <div style="margin-top:12px;font-weight:800;color:#8b4a00;">If you have an allergy or intolerance, please contact Radhe Tiffin before ordering.</div>
+        </div>
+        {% endif %}
+
+        {% if payment_method == "bank_transfer" %}
+        <div class="payment-box">
+            <strong>Bank transfer</strong>
+            <p>Payment instructions will also appear after your order is placed.</p>
+            <div>Account holder: <strong>{{ bank_account_holder }}</strong></div>
+            <div>IBAN: <strong>{{ bank_iban }}</strong></div>
+            <div>BIC: <strong>{{ bank_bic }}</strong></div>
+        </div>
+        {% endif %}
+
+        <div class="total">
+            <span>Total</span>
+            <strong>€{{ "%.2f"|format(total) }}</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('place_order', day=day_key) }}" class="actions">
+            <input type="hidden" name="first_name" value="{{ first_name }}">
+            <input type="hidden" name="last_name" value="{{ last_name }}">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="phone" value="{{ phone }}">
+            <input type="hidden" name="quantity" value="{{ quantity }}">
+            <input type="hidden" name="pickup_slot_id" value="{{ pickup_slot_id }}">
+            <input type="hidden" name="payment_method" value="{{ payment_method }}">
+            <input type="hidden" name="privacy_consent" value="{{ 1 if privacy_consent else 0 }}">
+            <input type="hidden" name="terms_accepted" value="{{ 1 if terms_accepted else 0 }}">
+            <input type="hidden" name="marketing_consent" value="{{ 1 if marketing_consent else 0 }}">
+            {% for code in customer_allergens %}<input type="hidden" name="customer_allergens" value="{{ code }}">{% endfor %}
+            <a class="button secondary" href="{{ url_for('order', day=day_key) }}">EDIT</a>
+            <button class="button primary" type="submit">PLACE ORDER →</button>
+        </form>
+        <div class="note">Availability is checked again when you place the order.</div>
+    </section>
+</main>
+</body>
+</html>

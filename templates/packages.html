@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Tiffin Packages | Radhe Tiffin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+body{margin:0;background:#fffaf2;color:#2d241e;font-family:Arial,Helvetica,sans-serif}
+.header{height:74px;border-bottom:1px solid #e8e2da;background:#fffaf2}.header-inner{max-width:1180px;height:100%;margin:auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between}.logo{font-weight:900;letter-spacing:.12em;text-decoration:none;color:#2d241e}.logo-circle{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#e98308;color:#fff;margin-right:8px}.logo strong{color:#bd6200}.back{font-size:12px;font-weight:800;color:#2d241e;text-decoration:none}
+.wrap{max-width:1100px;margin:auto;padding:58px 22px 90px}.eyebrow{color:#bd6200;font-size:10px;font-weight:900;letter-spacing:.16em}.intro{color:#665b53;max-width:760px;line-height:1.6}
+.package-picker{background:#fff;border:1px solid #e8e2da;border-radius:18px;padding:18px 20px;margin:28px 0 16px}.package-picker label{display:block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:#5d5148;margin-bottom:8px}.package-picker select{width:100%;height:50px;border:1px solid #e5e1db;border-radius:12px;padding:0 14px;font-size:15px;background:#fff;color:#2d241e}.package-picker select:focus{outline:2px solid rgba(233,131,8,.25);border-color:#e98308}.picker-help{font-size:11px;color:#665b53;margin-top:8px}
+.package-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 30px}.package{appearance:none;width:100%;text-align:left;font-family:inherit;color:inherit;background:#fff;border:1px solid #e8e2da;border-radius:18px;padding:20px;min-height:150px;box-sizing:border-box;cursor:pointer;transition:.15s ease}.package:hover{border-color:#e98308;transform:translateY(-2px)}.package.selected{border:2px solid #e98308;box-shadow:0 0 0 2px rgba(233,131,8,.10)}.package h3{margin:0 0 8px;font-size:16px}.price{font-size:30px;font-weight:900}.saving{color:#276347;font-size:11px;font-weight:800;margin:6px 0 18px}.package-note{font-size:12px;color:#665b53;line-height:1.45}
+.form{background:#fff;border:1px solid #e8e2da;border-radius:22px;padding:28px}.form-head{margin-bottom:22px}.form-head h2{margin:0 0 6px}.form-head p{margin:0;color:#665b53;font-size:13px;line-height:1.5}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin-bottom:14px}.field label{display:block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;color:#5d5148}.field input,.field select{width:100%;height:46px;border:1px solid #e5e1db;border-radius:12px;padding:0 12px;font-size:14px;box-sizing:border-box;background:#fff;color:#2d241e}.days-field{margin-top:4px}.days-header{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:9px}.days-help{font-size:11px;color:#665b53}.day-count{font-size:11px;font-weight:900;color:#bd6200;white-space:nowrap}.days{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.day-card{position:relative}.day-card input{position:absolute;opacity:0;pointer-events:none}.day-label{display:flex;align-items:center;justify-content:center;min-height:58px;border:1px solid #e5e1db;border-radius:14px;background:#fff;cursor:pointer;font-size:12px;font-weight:900;letter-spacing:.04em;transition:.15s ease}.day-label:hover{border-color:#e98308}.day-card input:checked + .day-label{background:#fff0d5;border-color:#e98308;box-shadow:0 0 0 2px rgba(233,131,8,.12)}.day-card input:disabled + .day-label{opacity:.42;cursor:not-allowed}.submit{width:100%;height:52px;border:0;border-radius:999px;background:#2d241e;color:#fff;font-weight:900;cursor:pointer;margin-top:8px}.submit:disabled{opacity:.45;cursor:not-allowed}.selection-note{font-size:11px;color:#665b53;margin-top:10px;text-align:center}.bank-note{margin-top:16px;padding:13px 15px;border:1px solid #ead7bb;background:#fff8eb;border-radius:14px;color:#5d5148;font-size:12px;line-height:1.55}
+.allergen-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(45,36,30,.58)}.allergen-modal-card{width:min(600px,100%);max-height:85vh;overflow:auto;background:#fff;border-radius:22px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.allergen-modal-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#fff0d5;color:#8b4a00;font-weight:900;font-size:22px;margin-bottom:12px}.allergen-modal-card h2{margin:0 0 8px;font-size:24px}.modal-text{color:#665b53;font-size:13px;line-height:1.55}.allergen-modal-close{width:100%;height:46px;border:0;border-radius:999px;background:#2d241e;color:#fff;font-weight:900;cursor:pointer;margin-top:18px}
+.allergen-week{margin:0 0 18px;padding:16px;border:1px solid #efc98f;background:#fff8eb;border-radius:14px}.allergen-week h3{margin:0 0 5px;color:#8b4a00;font-size:15px}.allergen-week p{margin:0;color:#665b53;font-size:12px;line-height:1.55}.allergen-week-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}.allergen-day{padding:10px;border:1px solid #ead7bb;border-radius:11px;background:#fff}.allergen-day strong{font-size:11px}.allergen-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.allergen-tag{padding:5px 8px;border-radius:999px;background:#fff0d5;color:#8b4a00;font-size:10px;font-weight:900}.no-allergen{display:block;margin-top:6px;color:#665b53;font-size:11px}.allergen-note{margin-top:12px!important;color:#8b4a00!important;font-weight:800}
+@media(max-width:1000px){.package-grid{grid-template-columns:repeat(3,1fr)}.days{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.fields{grid-template-columns:1fr}.package-grid{grid-template-columns:1fr 1fr}.days{grid-template-columns:1fr 1fr}.package.selected{transform:none}}@media(max-width:430px){.package-grid,.days{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header"><div class="header-inner"><a href="/" class="logo"><span class="logo-circle">R</span>RADHE <strong>TIFFIN</strong></a><a class="back" href="/">← Website</a></div></header>
+<main class="wrap">
+<div class="eyebrow">RADHE TIFFIN · WEEKLY PACKAGES</div>
+<h1>Make tiffin part of your week.</h1>
+<p class="intro">Choose your package below. The package automatically selects the matching number of weekdays and weekly price. You can then change the selected weekdays if you prefer different days.</p>
+
+<form class="form" method="POST" action="{{ url_for('package_summary') }}" id="packageForm">
+<div class="package-picker">
+<label for="packageSelector">Choose your package</label>
+<select name="frequency" id="packageSelector" required>
+<option value="">Select 1–5 days per week</option>
+{% for frequency, price in package_prices.items() %}
+<option value="{{ frequency }}">{{ frequency }} day{% if frequency != 1 %}s{% endif %} / week — €{{ "%.2f"|format(price) }}</option>
+{% endfor %}
+</select>
+<div class="picker-help">Selecting a package automatically chooses the corresponding number of weekdays and highlights the package price.</div>
+</div>
+
+<div class="package-grid" aria-label="Weekly package options">
+{% for frequency, price in package_prices.items() %}
+<button type="button" class="package {% if frequency == 5 %}featured{% endif %}" data-package-card="{{ frequency }}">
+<h3>{{ frequency }} day{% if frequency != 1 %}s{% endif %} / week</h3>
+<div class="price">€{{ "%.0f"|format(price) }}</div>
+<div class="saving">{% if frequency == 1 %}Regular price{% else %}Save €{{ "%.0f"|format(frequency*12-price) }}{% endif %}</div>
+<div class="package-note">1 tiffin on each selected day</div>
+</button>
+{% endfor %}
+</div>
+
+<div class="form-head"><h2>Your weekly package</h2><p>Select your details. The same pickup location and pickup time will be used on every selected day.</p></div>
+<div class="fields">
+<div class="field"><label for="first_name">First name</label><input id="first_name" name="first_name" autocomplete="given-name" required></div>
+<div class="field"><label for="last_name">Last name</label><input id="last_name" name="last_name" autocomplete="family-name" required></div>
+<div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+<div class="field"><label for="location">Pickup location</label><select name="location" id="location" required><option value="Ulm">Ulm</option><option value="Neu-Ulm">Neu-Ulm</option></select></div>
+</div>
+
+<div class="allergen-week">
+<h3>⚠ Allergen information</h3>
+<p>The verified allergens for the weekly menus are shown below. Please review them before ordering.</p>
+<div class="allergen-week-grid">
+{% for menu in menus %}
+<div class="allergen-day"><strong>{{ menu.day }} · {{ menu.name }}</strong>
+{% set ns = namespace(labels=[]) %}{% for entry in menu.items_with_allergens %}{% for code in entry.allergens %}{% set label = {'gluten':'Gluten-containing cereals','milk':'Milk','peanuts':'Peanuts','nuts':'Nuts','soy':'Soybeans','sesame':'Sesame','mustard':'Mustard','celery':'Celery','egg':'Eggs','fish':'Fish','crustaceans':'Crustaceans','molluscs':'Molluscs','lupin':'Lupin','sulphites':'Sulphites'}.get(code, code) %}{% if label not in ns.labels %}{% set ns.labels = ns.labels + [label] %}{% endif %}{% endfor %}{% endfor %}
+{% if ns.labels %}<div class="allergen-tags">{% for label in ns.labels %}<span class="allergen-tag">{{ label }}</span>{% endfor %}</div>{% else %}<span class="no-allergen">No verified allergens entered.</span>{% endif %}
+</div>
+{% endfor %}
+</div>
+<p class="allergen-note">If you have a food allergy or intolerance, please contact Radhe Tiffin before ordering.</p>
+</div>
+
+<div class="allergen-week" style="background:#fff;border-color:#e8e2da;">
+<h3 style="color:#2d241e;">Your allergy / intolerance (optional)</h3>
+<p>Select any allergens you need the Radhe Tiffin team to review for <strong>your entire weekly package</strong>. These are customer requests and do not guarantee an allergen-free meal.</p>
+<div class="allergen-week-grid">
+{% for code,label in [('gluten','Gluten-containing cereals'),('milk','Milk'),('peanuts','Peanuts'),('nuts','Nuts'),('soy','Soybeans'),('sesame','Sesame'),('mustard','Mustard'),('celery','Celery'),('egg','Eggs'),('fish','Fish'),('crustaceans','Crustaceans'),('molluscs','Molluscs'),('lupin','Lupin'),('sulphites','Sulphites')] %}
+<label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e5e1db;border-radius:11px;background:#fff;font-size:12px;font-weight:800;cursor:pointer;"><input type="checkbox" name="customer_allergens" value="{{ code }}"> {{ label }}</label>
+{% endfor %}
+</div>
+</div>
+
+<div class="field days-field">
+<div class="days-header"><div><label>Choose your days</label><div class="days-help">Monday to Friday only. Your package selection chooses the number of days automatically.</div></div><div class="day-count" id="dayCount">Select a package</div></div>
+<div class="days">
+{% for menu in menus %}
+<div class="day-card"><input type="checkbox" id="day-{{ loop.index }}" name="days" value="{{ menu.day }}" data-frequency><label class="day-label" for="day-{{ loop.index }}">{{ menu.day|upper }}</label></div>
+{% endfor %}
+</div>
+</div>
+
+<div class="field"><label for="pickup_time">Preferred pickup time</label><select name="pickup_time" id="pickup_time" required>{% for start,end in [('12:00','12:30'),('12:30','13:00'),('13:00','13:30'),('13:30','14:00'),('14:00','14:30'),('14:30','15:00')] %}<option value="{{ start }}–{{ end }}">{{ start }}–{{ end }} Uhr</option>{% endfor %}</select></div>
+<div class="field"><label for="payment_method">Payment method</label><select name="payment_method" id="payment_method" required>{% for key,method in payment_methods.items() %}<option value="{{ key }}">{{ method.label }}</option>{% endfor %}</select></div>
+
+<div style="margin:8px 0 16px;padding:14px;border:1px solid #e8e2da;border-radius:12px;background:#fffaf2;font-size:12px;line-height:1.5;">
+<label style="display:flex;gap:9px;align-items:flex-start;"><input type="checkbox" name="privacy_consent" value="1" required> <span>I have read the <a href="/datenschutz" target="_blank">Privacy Policy</a>.</span></label>
+<label style="display:flex;gap:9px;align-items:flex-start;margin-top:8px;"><input type="checkbox" name="terms_accepted" value="1" required> <span>I accept the <a href="/agb" target="_blank">Terms & Conditions</a>.</span></label>
+<label style="display:flex;gap:9px;align-items:flex-start;margin-top:8px;"><input type="checkbox" name="marketing_consent" value="1"> <span>I would like to receive occasional offers and menu updates.</span></label></div>
+<div class="bank-note">Online card payment is available when Stripe is configured. Bank transfer instructions are shown after ordering, and cash on pickup is available where enabled.</div>
+<button class="submit" type="submit" id="submitButton" disabled>REVIEW WEEKLY PACKAGE →</button>
+<div class="selection-note">You will review the selected days, menu and final price before placing the order.</div>
+</form>
+</main>
+{% if package_allergens %}
+<div class="allergen-modal" id="packageAllergenModal">
+<div class="allergen-modal-card"><div class="allergen-modal-icon">!</div><h2>Allergen information</h2><p class="modal-text">Please review the verified allergens for the weekly menus before placing your package order.</p>
+{% for menu in menus %}<div class="allergen-day"><strong>{{ menu.day }} · {{ menu.name }}</strong>{% set ns = namespace(labels=[]) %}{% for entry in menu.items_with_allergens %}{% for code in entry.allergens %}{% set label = {'gluten':'Gluten-containing cereals','milk':'Milk','peanuts':'Peanuts','nuts':'Nuts','soy':'Soybeans','sesame':'Sesame','mustard':'Mustard','celery':'Celery','egg':'Eggs','fish':'Fish','crustaceans':'Crustaceans','molluscs':'Molluscs','lupin':'Lupin','sulphites':'Sulphites'}.get(code, code) %}{% if label not in ns.labels %}{% set ns.labels = ns.labels + [label] %}{% endif %}{% endfor %}{% endfor %}{% if ns.labels %}<div class="allergen-tags">{% for label in ns.labels %}<span class="allergen-tag">{{ label }}</span>{% endfor %}</div>{% else %}<span class="no-allergen">No verified allergens entered.</span>{% endif %}</div>{% endfor %}
+<p class="modal-text" style="margin-top:14px;font-weight:800;color:#8b4a00;">If you have an allergy or intolerance, please contact Radhe Tiffin before ordering.</p><button type="button" class="allergen-modal-close" id="packageAllergenClose">I HAVE READ THIS — CONTINUE</button></div></div>
+{% endif %}
+<script>
+(function(){
+  const allergenModal=document.getElementById('packageAllergenModal');
+  const allergenClose=document.getElementById('packageAllergenClose');
+  if(allergenModal && allergenClose){
+    allergenClose.addEventListener('click',()=>{allergenModal.style.display='none';document.body.style.overflow='';});
+    document.body.style.overflow='hidden';
+  }
+})();
+(function(){
+  const selector=document.getElementById('packageSelector');
+  const cards=[...document.querySelectorAll('[data-package-card]')];
+  const boxes=[...document.querySelectorAll('input[data-frequency]')];
+  const count=document.getElementById('dayCount');
+  const submit=document.getElementById('submitButton');
+  const form=document.getElementById('packageForm');
+
+  function syncCards(n){
+    cards.forEach(card=>card.classList.toggle('selected', Number(card.dataset.packageCard)===n));
+  }
+
+  function syncDays(){
+    const n=Number(selector.value||0);
+    let checked=boxes.filter(b=>b.checked).length;
+    boxes.forEach(b=>{ b.disabled = !b.checked && n>0 && checked>=n; });
+    if(!n){
+      count.textContent='Select a package';
+      submit.disabled=true;
+      syncCards(0);
+      return;
+    }
+    count.textContent=checked + ' of ' + n + ' selected';
+    submit.disabled = checked !== n;
+    syncCards(n);
+  }
+
+  function selectPackage(n){
+    selector.value=String(n);
+    boxes.forEach(b=>b.checked=false);
+    // Default weekday selection: Monday, then Tuesday, Wednesday, Thursday, Friday.
+    boxes.slice(0,n).forEach(b=>b.checked=true);
+    syncDays();
+  }
+
+  selector.addEventListener('change',()=>selectPackage(Number(selector.value||0)));
+  cards.forEach(card=>card.addEventListener('click',()=>selectPackage(Number(card.dataset.packageCard))));
+  boxes.forEach(b=>b.addEventListener('change',syncDays));
+
+  form.addEventListener('submit',e=>{
+    const n=Number(selector.value||0);
+    const checked=boxes.filter(b=>b.checked).length;
+    if(n<1 || checked!==n){
+      e.preventDefault();
+      alert(n ? 'Please choose exactly ' + n + ' weekday(s) for your package.' : 'Please choose a weekly package first.');
+    }
+  });
+
+  syncDays();
+})();
+</script>
+</body>
+</html>

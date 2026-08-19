@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: radhe-tiffin
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: RADHE_SECRET_KEY
+        generateValue: true
+      - key: RADHE_ADMIN_USERNAME
+        sync: false
+      - key: RADHE_ADMIN_PASSWORD
+        sync: false
+      - key: RADHE_DATABASE_PATH
+        value: /var/data/database.db
+      - key: RADHE_EXCEL_PATH
+        value: /var/data/RadheTiffin_Business.xlsx
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: RADHE_BANK_ACCOUNT_HOLDER
+        sync: false
+      - key: RADHE_BANK_IBAN
+        sync: false
+      - key: RADHE_BANK_BIC
+        sync: false
+    disk:
+      name: radhe-tiffin-data
+      mountPath: /var/data
+      sizeGB: 1

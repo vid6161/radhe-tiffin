@@ -1,0 +1,27 @@
+RADHE TIFFIN — CUSTOMER ALLERGEN REQUEST UPDATE
+
+This update adds customer-side allergy/intolerance selection to the individual tiffin ordering page.
+
+WHAT CHANGED
+1. Customers now see a "Do you have any food allergies or intolerances?" section while ordering.
+2. Customers can select one or more of the 14 EU allergen categories.
+3. The selected allergy/intolerance requirements travel through the order summary and are saved with the order.
+4. Admin orders show a prominent "CUSTOMER-REPORTED ALLERGY / INTOLERANCE" warning.
+5. The existing admin-verified menu allergen system is unchanged.
+6. The existing verified-allergen popup remains separate: it only appears when the admin has verified allergens for that menu.
+7. A database table named order_allergen_requests is created automatically by database.init_db().
+
+IMPORTANT
+- DO NOT replace your existing database.db with an older database from another ZIP.
+- Extract this ZIP over your existing RadheTiffin folder so your current database, orders, menu and allergen selections are preserved.
+- Restart Flask after replacing the files.
+- The customer allergy selection is a request/notification to the business; it is NOT a guarantee that the meal is allergen-free.
+
+TEST
+1. Open /order/tuesday (or another active menu day).
+2. Scroll below the customer details.
+3. You should see the allergy/intolerance checkboxes.
+4. Select e.g. Milk and Nuts.
+5. Continue to order summary; the selections should be shown.
+6. Place the order.
+7. Open Admin Dashboard and confirm the order contains the CUSTOMER-REPORTED ALLERGY / INTOLERANCE warning.

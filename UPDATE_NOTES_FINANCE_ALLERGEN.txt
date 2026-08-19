@@ -1,0 +1,35 @@
+RADHE TIFFIN — FINANCE + ALLERGEN UPDATE
+
+1. Finance
+- Added DELETE buttons to Recent expenses, Recent salaries, and Recent usage / inventory.
+- Each delete asks for confirmation before removing the database entry.
+- Finance totals recalculate automatically after deletion.
+- Excel workbook is regenerated after deletion.
+
+2. Allergen Management
+- Fixed the checkbox/label overlap caused by the global .check CSS class.
+- Allergen checkboxes now use a dedicated layout class with stable 3-column desktop / 2-column tablet / 1-column mobile layout.
+- Checkbox controls and labels are aligned cleanly.
+
+No existing finance records are removed automatically by this update.
+
+
+ORDER FLOW FIX (2026-08-18): Fixed consent values carried from the order form to the order summary. Boolean Jinja values are now submitted as 1/0 so the final PLACE ORDER validation accepts checked Privacy Policy and Terms & Conditions. Applied to individual and weekly package summary forms.
+
+ORDER ALLERGEN CUSTOMER DISPLAY UPDATE — 2026-08-18
+- Added customer-facing verified allergen information to individual tiffin ordering.
+- An allergen modal automatically opens on the order page when verified allergens exist for the selected menu.
+- Allergen information is repeated on the order review and confirmation pages.
+- Added the same allergen display and modal to weekly package ordering.
+- Added verified allergen alerts to the admin order cards so staff can see them immediately when preparing an order.
+- Allergen data is read directly from menu_item_allergens maintained in Admin → Allergens. No unverified allergens were invented or seeded.
+- If no verified allergen data exists for a menu item, no customer allergen popup is shown.
+
+
+FINAL UI / PRODUCTION CLEANUP — 2026-08-18
+- Fixed the admin order-card CSS block so allergen badges render correctly instead of running together with plain text.
+- Fixed duplicate pickup-time display so admin shows one “Uhr” suffix.
+- Weekly package ordering includes overall customer allergy/intolerance requests plus verified menu allergen information.
+- Catering ordering includes overall customer allergy/intolerance requests; catering requests do not claim dish-level matches because the final catering menu is confirmed separately.
+- Production Readiness now labels Stripe as OPTIONAL when card payments are intentionally disabled.
+- Local database in this release contains the five sample menu days and 60 pickup slots, with zero orders/customers. Dish-level allergens are intentionally not auto-invented; verify actual recipes and supplier ingredients in Admin → Allergens before launch.

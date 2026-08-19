@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | Radhe Tiffin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body{margin:0;background:#fffaf2;color:#2d241e;font-family:Arial,Helvetica,sans-serif}
+        .header{height:74px;border-bottom:1px solid #e8e2da;background:#fffaf2}
+        .header-inner{max-width:1050px;height:100%;margin:auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between}
+        .logo{display:flex;align-items:center;gap:10px;color:#2d241e;text-decoration:none;font-weight:900;letter-spacing:.12em}
+        .logo-circle{width:40px;height:40px;border-radius:50%;background:#e98308;color:#fff;display:grid;place-items:center;font-size:20px}
+        .logo strong{color:#bd6200}.header-link{color:#2d241e;text-decoration:none;font-size:13px;font-weight:800}
+        .container{max-width:760px;margin:auto;padding:70px 22px 90px;text-align:center}
+        .success{width:64px;height:64px;border-radius:50%;margin:0 auto 20px;background:#e5f4eb;color:#276347;display:grid;place-items:center;font-size:30px;font-weight:900}
+        .eyebrow{color:#276347;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+        h1{font-size:44px;margin:10px 0}.intro{color:#665b53;font-size:15px;margin-bottom:28px}
+        .card{background:#fff;border:1px solid #e8e2da;border-radius:22px;padding:28px;text-align:left;box-shadow:0 12px 30px rgba(45,36,30,.04)}
+        .order-number{font-size:22px;font-weight:900;margin-bottom:20px}
+        .row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid #eee8e1}.row:last-child{border-bottom:0}
+        .label{color:#665b53;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.value{font-weight:800;text-align:right}
+        .button{display:flex;height:48px;margin-top:24px;border-radius:999px;background:#2d241e;color:#fff;text-decoration:none;align-items:center;justify-content:center;font-size:11px;font-weight:900;letter-spacing:.08em}.button:hover{background:#bd6200}
+        .allergen-alert{margin-top:18px;padding:16px;border:1px solid #efc98f;background:#fff8eb;border-radius:14px;text-align:left}.allergen-alert h3{margin:0 0 6px;color:#8b4a00;font-size:15px}.allergen-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}.allergen-tag{padding:6px 9px;border-radius:999px;background:#fff0d5;color:#8b4a00;font-size:11px;font-weight:900}.allergen-item{margin-top:10px;font-size:12px}.allergen-item strong{display:block;margin-bottom:4px}.allergen-alert p{font-size:12px;line-height:1.55;color:#5d5148}
+        @media(max-width:600px){.row{display:block}.value{text-align:left;margin-top:5px}}
+    </style>
+</head>
+<body>
+<header class="header"><div class="header-inner"><a href="/" class="logo"><span class="logo-circle">R</span><span>RADHE <strong>TIFFIN</strong></span></a><a href="/" class="header-link">Website →</a></div></header>
+<main class="container">
+    <div class="success">✓</div>
+    <div class="eyebrow">ORDER CONFIRMED</div>
+    <h1>Thank you!</h1>
+    <p class="intro">Your Radhe Tiffin order has been placed successfully.</p>
+    <section class="card">
+        <div class="order-number">{{ order_number }}</div>
+        <div class="row"><span class="label">Tiffin</span><span class="value">{{ item.name }}</span></div>
+        <div class="row"><span class="label">Pickup date</span><span class="value">{{ pickup_date }}</span></div>
+        <div class="row"><span class="label">Location</span><span class="value">{{ location }}</span></div>
+        <div class="row"><span class="label">Pickup time</span><span class="value">{{ pickup_time }}</span></div>
+        <div class="row"><span class="label">Quantity</span><span class="value">{{ quantity }}</span></div>
+        <div class="row"><span class="label">Total</span><span class="value">€{{ "%.2f"|format(total) }}</span></div>
+        <div class="row"><span class="label">Payment</span><span class="value">{{ payment_method_label }} · {{ payment_status|upper }}</span></div>
+
+        {% if customer_allergen_labels %}
+        <div class="allergen-alert">
+            <h3>⚠ Your allergy / intolerance request</h3>
+            <p>You requested that our team review the following for your entire tiffin:</p>
+            <div class="allergen-tags">{% for label in customer_allergen_labels %}<span class="allergen-tag">{{ label }}</span>{% endfor %}</div>
+            <p style="margin-top:10px;color:#8b4a00;font-weight:800;">Please confirm directly with Radhe Tiffin before consuming the food. This request does not guarantee an allergen-free meal.</p>
+        </div>
+        {% endif %}
+
+        {% if allergen_items %}
+        <div class="allergen-alert" id="allergenAlert">
+            <h3>⚠ Allergen alert for your order</h3>
+            <p>This order contains the following verified allergens:</p>
+            {% for entry in allergen_items %}<div class="allergen-item"><strong>{{ entry.name }}</strong><div class="allergen-tags">{% for allergen in entry.allergens %}<span class="allergen-tag">{{ allergen }}</span>{% endfor %}</div></div>{% endfor %}
+            <p style="margin-bottom:0;font-weight:800;color:#8b4a00;">If you have a food allergy or intolerance, please contact Radhe Tiffin before consuming the food.</p>
+        </div>
+        {% endif %}
+
+        {% if payment_url %}
+            <a href="{{ payment_url }}" class="button">PAY SECURELY ONLINE →</a>
+            <p style="margin:12px 0 0;text-align:center;color:#665b53;font-size:12px;">You will be taken to Stripe's secure checkout.</p>
+        {% elif payment_method == "bank_transfer" %}
+            <div style="margin-top:18px;padding:16px;border:1px solid #ead7bb;background:#fff8eb;border-radius:14px;font-size:12px;line-height:1.7;color:#5d5148;">
+                <strong>Bank transfer details</strong><br>
+                Account holder: {{ bank_account_holder }}<br>
+                IBAN: {{ bank_iban }}<br>
+                BIC: {{ bank_bic }}<br>
+                Please use your order number <strong>{{ order_number }}</strong> as the payment reference.
+            </div>
+        {% endif %}
+
+        <a href="/" class="button">BACK TO WEBSITE →</a>
+    </section>
+</main>
+{% if allergen_items %}
+<script>
+window.addEventListener('load', function(){
+    const alertBox=document.getElementById('allergenAlert');
+    if(alertBox){ alertBox.scrollIntoView({behavior:'smooth',block:'center'}); }
+});
+</script>
+{% endif %}
+</body>
+</html>
